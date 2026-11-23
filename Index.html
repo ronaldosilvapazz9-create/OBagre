@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>O Bagre</title>
+<style>
+  :root {
+    --bg: #0b1118;
+    --card: #121b26;
+    --card-2: #172230;
+    --text: #eef3f8;
+    --muted: #8fa1b5;
+    --accent: #22c55e;
+    --accent-dark: #15803d;
+    --danger: #ef4444;
+    --warn: #eab308;
+    --border: rgba(255, 255, 255, 0.08);
+  }
+
+  * {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    background: radial-gradient(circle at top, #132233 0%, var(--bg) 65%);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 12px;
+  }
+
+  .phone {
+    width: 100%;
+    max-width: 410px;
+    min-height: 680px;
+    max-height: 92dvh;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 26px;
+    box-shadow: 0 22px 60px rgba(0, 0, 0, 0.65);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* TELA INICIAL */
+  .start-screen {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 36px 24px 22px;
+    text-align: center;
+  }
+
+  .logo-wrap {
+    margin-top: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .title {
+    font-size: 2.3rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin: 0;
+  }
+
+  .subtitle {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin: 0;
+  }
+
+  .btn-play {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--accent);
+    color: #052e16;
+    border: none;
+    border-radius: 999px;
+    padding: 14px 32px;
+    font-size: 1.05rem;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 10px 25px rgba(34, 197, 94, 0.3);
+    transition: transform 0.12s ease, background 0.15s ease;
+  }
+
+  .btn-play:active {
+    transform: scale(0.97);
+    background: #16a34a;
+  }
+
+  .ball-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 2px solid #052e16;
+    display: inline-block;
+  }
+
+  .credit {
+    font-size: 0.72rem;
+    color: var(--muted);
+    opacity: 0.8;
+  }
+
+  /* JOGO */
+  .game-screen {
+    flex: 1;
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 14px;
+    gap: 10px;
+  }
+
+  .game-screen.active {
+    display: flex;
+  }
+
+  .start-screen.hidden {
+    display: none;
+  }
+
+  .top-player {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--card-2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 10px 12px;
+  }
+
+  .player-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: #1e2d3f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  .player-name {
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+
+  .player-meta {
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+
+  .ovr-badge {
+    background: rgba(34, 197, 94, 0.14);
+    color: #4ade80;
+    border: 1px solid rgba(34, 197, 94, 0.35);
+    border-radius: 10px;
+    padding: 6px 10px;
+    font-weight: 800;
+    font-size: 0.85rem;
+  }
+
+  /* MORAIS MINIMALISTAS */
+  .morals {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+  }
+
+  .moral-chip {
+    background: var(--card-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 6px 8px;
+    text-align: center;
+  }
+
+  .moral-label {
+    font-size: 0.65rem;
+    color: var(--muted);
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .moral-val {
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+
+  /* STATUS DO CLUBE / EMPREGO */
+  .club-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--card-2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 8px 12px;
+    font-size: 0.78rem;
+  }
+
+  .club-identity {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+  }
+
+  .color-dots {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .dot {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+  }
+
+  .standing-pill {
+    color: var(--muted);
+    font-weight: 600;
+  }
+
+  /* CARD CENTRAL ÚNICO */
+  .center-stage {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .event-card {
+    width: 100%;
+    background: var(--card-2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 18px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .event-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+
+  .tag {
+    background: rgba(255, 255, 255, 0.06);
+    padding: 3px 8px;
+    border-radius: 999px;
+    color: #cbd5e1;
+    font-weight: 600;
+  }
+
+  .event-title {
+    margin: 0;
+    font-size: 1.08rem;
+    line-height: 1.3;
+  }
+
+  .event-desc {
+    margin: 0;
+    font-size: 0.88rem;
+    line-height: 1.45;
+    color: #cbd5e1;
+  }
+
+  .choices {
+    display: flex;
+    gap: 10px;
+    margin-top: 4px;
+  }
+
+  .btn-choice {
+    flex: 1;
+    padding: 11px 12px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    font-weight: 700;
+    font-size: 0.86rem;
+    cursor: pointer;
+    background: #1e2d3f;
+    color: var(--text);
+  }
+
+  .btn-choice.yes {
+    background: rgba(34, 197, 94, 0.16);
+    border-color: rgba(34, 197, 94, 0.45);
+    color: #86efac;
+  }
+
+  .btn-choice.no {
+    background: rgba(239, 68, 68, 0.14);
+    border-color: rgba(239, 68, 68, 0.4);
+    color: #fca5a5;
+  }
+
+  .outcome-box {
+    background: rgba(255, 255, 255, 0.04);
+    border-left: 3px solid var(--accent);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 0.84rem;
+    line-height: 1.4;
+  }
+
+  .outcome-box.fail {
+    border-left-color: var(--danger);
+  }
+
+  /* RODAPÉ COM SETA MINIMALISTA */
+  .bottom-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 4px 2px;
+  }
+
+  .season-info {
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+
+  .btn-arrow {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--accent);
+    color: #052e16;
+    font-size: 1.25rem;
+    font-weight: 900;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 18px rgba(34, 197, 94, 0.25);
+  }
+
+  .btn-arrow:disabled {
+    opacity: 0.28;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+</style>
+</head>
+<body>
+<div class="phone">
+  <!-- TELA INICIAL -->
+  <section class="start-screen" id="startScreen">
+    <div class="logo-wrap">
+      <!-- Peixe + Bola minimalista -->
+      <svg width="96" height="96" viewBox="0 0 96 96" fill="none" aria-label="Logo O Bagre">
+        <circle cx="48" cy="48" r="44" fill="#172230" stroke="#22c55e" stroke-width="2" />
+        <path d="M20 46C28 32 46 30 60 40L72 32V60L60 52C46 62 28 60 20 46Z" fill="#38bdf8" stroke="#e0f2fe" stroke-width="2" stroke-linejoin="round" />
+        <circle cx="31" cy="44" r="2.5" fill="#0b1118" />
+        <circle cx="56" cy="64" r="11" fill="#ffffff" stroke="#0b1118" stroke-width="2" />
+        <polygon points="56,57 61,61 59,67 53,67 51,61" fill="#0b1118" />
+      </svg>
+      <h1 class="title">O Bagre</h1>
+      <p class="subtitle">A vida real de quem joga só pelo amor à canela.</p>
+    </div>
+
+    <button class="btn-play" id="btnStart">
+      <span class="ball-dot"></span>
+      <span>JOGAR</span>
+    </button>
+
+    <div class="credit">desenvolvido por Ronaldo Paz</div>
+  </section>
+
+  <!-- TELA DO JOGO -->
+  <main class="game-screen" id="gameScreen">
+    <div class="top-player">
+      <div class="player-left">
+        <div class="avatar" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="8" r="4" fill="#cbd5e1" />
+            <path d="M5 20C5 16.5 8.1 14 12 14C15.9 14 19 16.5 19 20" stroke="#cbd5e1" stroke-width="2" stroke-linecap="round" />
+          </svg>
+        </div>
+        <div>
+          <div class="player-name" id="playerName">Bagre da Vila</div>
+          <div class="player-meta" id="playerMeta">19 anos • Atacante</div>
+        </div>
+      </div>
+      <div class="ovr-badge" id="ovrBadge">OVR 32</div>
+    </div>
+
+    <div class="morals">
+      <div class="moral-chip">
+        <span class="moral-label">Pastor</span>
+        <span class="moral-val" id="mPastor">50</span>
+      </div>
+      <div class="moral-chip">
+        <span class="moral-label">Torcida</span>
+        <span class="moral-val" id="mTorcida">50</span>
+      </div>
+      <div class="moral-chip">
+        <span class="moral-label">Técnico</span>
+        <span class="moral-val" id="mTecnico">50</span>
+      </div>
+      <div class="moral-chip">
+        <span class="moral-label">Time</span>
+        <span class="moral-val" id="mTime">50</span>
+      </div>
+    </div>
+
+    <div class="club-bar">
+      <div class="club-identity">
+        <span class="color-dots">
+          <span class="dot" id="dot1"></span>
+          <span class="dot" id="dot2"></span>
+        </span>
+        <span id="clubTitle">Sem Clube</span>
+      </div>
+      <div class="standing-pill" id="standingInfo">-</div>
+    </div>
+
+    <div class="center-stage">
+      <div class="event-card" id="eventCard"></div>
+    </div>
+
+    <div class="bottom-nav">
+      <span class="season-info" id="seasonInfo">Temporada 1 • Evento 1/4</span>
+      <button class="btn-arrow" id="btnNext" title="Avançar" aria-label="Avançar">➔</button>
+    </div>
+  </main>
+</div>
+
+<script>
+  const CLUBS_LOW = [
+    { name: "Atlético da Pedreira FC", tier: "low", c1: "#dc2626", c2: "#111827", salary: 650, teams: 12 },
+    { name: "União do Brejo EC", tier: "low", c1: "#16a34a", c2: "#fef08a", salary: 800, teams: 12 },
+    { name: "Serra Branca Atlético", tier: "low", c1: "#2563eb", c2: "#ffffff", salary: 950, teams: 14 }
+  ];
+
+  const CLUBS_MID = [
+    { name: "Sertão Forte Esporte", tier: "mid", c1: "#f97316", c2: "#1e293b", salary: 2400, teams: 20 },
+    { name: "Portuguesa do Vale", tier: "mid", c1: "#15803d", c2: "#b91c1c", salary: 2900, teams: 20 }
+  ];
+
+  const CLUBS_TOP = [
+    { name: "Esporte Clube Bahia", tier: "top", c1: "#1d4ed8", c2: "#dc2626", salary: 18000, teams: 20 },
+    { name: "CR Flamengo", tier: "top", c1: "#dc2626", c2: "#111827", salary: 25000, teams: 20 }
+  ];
+
+  const JOBS = [
+    { name: "Atacadão Central (Repositor)", c1: "#eab308", c2: "#1d4ed8", salary: 1520 },
+    { name: "Mercadinho Bom Preço", c1: "#22c55e", c2: "#ffffff", salary: 1350 },
+    { name: "Verdurão do Seu Zé", c1: "#16a34a", c2: "#f97316", salary: 1200 },
+    { name: "Lava-Jato Espuma do Cerrado", c1: "#0ea5e9", c2: "#facc15", salary: 1300 },
+    { name: "Funilaria Martelo de Ouro", c1: "#64748b", c2: "#ef4444", salary: 1450 }
+  ];
+
+  const FOOTBALL_EVENTS = [
+    {
+      date: "14 de Março",
+      tag: "Vestiário",
+      title: "Discussão no vestiário antes do aquecimento",
+      desc: "Dois companheiros brigaram por causa de um par de chuteiras furadas. O técnico pediu sua posição.",
+      yesLabel: "Apartar e apoiar o grupo",
+      noLabel: "Ficar quieto no canto",
+      onYes: () => Math.random() < 0.5
+        ? { ok: true, msg: "Deu certo: o elenco fechou com você e o técnico elogiou sua liderança.", d: { time: 8, tecnico: 6, ovr: 1 } }
+        : { ok: false, msg: "Deu errado: um dos colegas achou que você tomou partido e o clima pesou.", d: { time: -7, tecnico: -3 } },
+      onNo: () => Math.random() < 0.5
+        ? { ok: true, msg: "Deu certo: você evitou confusão desnecessária e manteve o foco.", d: { pastor: 4, time: 2 } }
+        : { ok: false, msg: "Deu errado: a torcida pegou no pé dizendo que faltou atitude.", d: { torcida: -7, time: -4 } }
+    },
+    {
+      date: "29 de Maio",
+      tag: "Patrocínio",
+      title: "Parceria com a Cabeleireira Leila",
+      desc: "A Leila quer estampar o nome no seu calção em troca de corte de cabelo, fazer a unha e um troco.",
+      yesLabel: "Fechar com a Leila",
+      noLabel: "Recusar patrocínio",
+      onYes: () => Math.random() < 0.5
+        ? { ok: true, msg: "Deu certo: visual alinhado, unha feita e um dinheiro extra no bolso.", d: { torcida: 5, pastor: 3 } }
+        : { ok: false, msg: "Deu errado: zoaram você no treino por causa do patrocínio alternativo.", d: { time: -6, torcida: -4 } },
+      onNo: () => Math.random() < 0.5
+        ? { ok: true, msg: "Deu certo: você manteve a postura clássica dentro de campo.", d: { pastor: 4, tecnico: 3 } }
+        : { ok: false, msg: "Deu errado: perdeu um agrado simples que ajudava no mês.", d: { time: -3 } }
+    },
+    {
+      date: "19 de Agosto",
+      tag: "Mercado da Bola",
+      title: "Colega do elenco acerta com gigante",
+      desc: "Um meia do seu time foi anunciado no Bahia após um bom turno, enquanto você perdeu gol na cara.",
+      yesLabel: "Treinar dobro após o expediente",
+      noLabel: "Desabafar na igreja e focar",
+      onYes: () => Math.random() < 0.5
+        ? { ok: true, msg: "Deu certo: seu condicionamento físico respondeu bem nos treinos.", d: { tecnico: 7, ovr: 1 } }
+        : { ok: false, msg: "Deu errado: sentiu uma fisgada muscular e perdeu ritmo.", d: { tecnico: -6, time: -3 } },
+      onNo: () => Math.random() < 0.5
+        ? { ok: true, msg: "Deu certo: cabeça no lugar para seguir lutando pelo seu espaço.", d: { pastor: 8, torcida: 3 } }
+        : { ok: false, msg: "Deu errado: a cobrança da arquibancada aumentou no jogo seguinte.", d: { torcida: -7 } }
+    },
+    {
+      date: "11 de Outubro",
+      tag: "Patrocínio",
+      title: "Loja de Capinha de Celular e Verdurão",
+      desc: "O dono do verdurão e uma loja de capinhas oferecem apoio local para divulgar nas redes.",
+      yesLabel: "Aceitar divulgação",
+      noLabel: "Passar a vez",
+      onYes: () => Math.random() < 0.5
+        ? { ok: true, msg: "Deu certo: o bairro abraçou a ideia e rendeu moral com o povo.", d: { torcida: 6, time: 3 } }
+        : { ok: false, msg: "Deu errado: a capinha soltou no meio do jogo e virou piada.", d: { time: -5, torcida: -5 } },
+      onNo: () => Math.random() < 0.5
+        ? { ok: true, msg: "Deu certo: foco total na bola sem distrações.", d: { tecnico: 4 } }
+        : { ok: false, msg: "Deu errado: o pessoal do bairro ficou chateado com a recusa.", d: { torcida: -5 } }
+    }
+  ];
+
+  const WORK_EVENTS = [
+    {
+      date: "08 de Abril",
+      tag: "Firma",
+      title: "Turno pesado descarregando paletes",
+      desc: "O caminhão chegou atrasado e as costas pedem arrego. Na TV do refeitório passa rodada de futebol.",
+      yesLabel: "Segurar a bronca e bater meta",
+      noLabel: "Pedir pra trocar de setor",
+      onYes: () => Math.random() < 0.5
+        ? { ok: true, msg: "Deu certo: você terminou tudo, mas a saudade da bola bateu forte.", d: { pastor: 5, time: 4, vontadeFutebol: 18 } }
+        : { ok: false, msg: "Deu errado: exaustão total no fim do dia, zero perna pra correr.", d: { time: -5, vontadeFutebol: 10 } },
+      onNo: () => Math.random() < 0.5
+        ? { ok: true, msg: "Deu certo: conseguiu um setor mais leve e sobrou fôlego.", d: { tecnico: 3, vontadeFutebol: 12 } }
+        : { ok: false, msg: "Deu errado: a chefia reclamou da mudança de posto.", d: { torcida: -4, vontadeFutebol: 15 } }
+    },
+    {
+      date: "22 de Julho",
+      tag: "Rotina",
+      title: "Peneira amadora no fim de semana",
+      desc: "Marcam um rachão com olheiro de time pequeno no mesmo dia em que pedem hora extra no serviço.",
+      yesLabel: "Ir atrás do sonho na bola",
+      noLabel: "Garantir o extra do emprego",
+      onYes: () => Math.random() < 0.5
+        ? { ok: true, msg: "Deu certo: você correu como se valesse título e chamou atenção.", d: { torcida: 6, time: 5, ovr: 1, vontadeFutebol: 22 } }
+        : { ok: false, msg: "Deu errado: faltou fôlego no segundo tempo e o cansaço pesou.", d: { tecnico: -4, vontadeFutebol: 14 } },
+      onNo: () => Math.random() < 0.5
+        ? { ok: true, msg: "Deu certo: dinheiro extra garantiu as contas em dia.", d: { pastor: 5, vontadeFutebol: 12 } }
+        : { ok: false, msg: "Deu errado: ver o campo vazio apertou o peito pra voltar a jogar.", d: { time: -4, vontadeFutebol: 25 } }
+    },
+    {
+      date: "17 de Setembro",
+      tag: "Trabalho",
+      title: "Cliente exige pressa no atendimento",
+      desc: "Um cliente estressado aperta o passo no balcão enquanto você pensa na última cobrança de falta.",
+      yesLabel: "Responder com calma e paciência",
+      noLabel: "Retrucar na mesma moeda",
+      onYes: () => Math.random() < 0.5
+        ? { ok: true, msg: "Deu certo: manteve a classe e a paz no coração.", d: { pastor: 7, vontadeFutebol: 15 } }
+        : { ok: false, msg: "Deu errado: engoliu seco, mas a rotina tá pesando demais.", d: { torcida: -3, vontadeFutebol: 20 } },
+      onNo: () => Math.random() < 0.5
+        ? { ok: true, msg: "Deu certo: ninguém folgou com você e o dia encerrou.", d: { time: 4, vontadeFutebol: 15 } }
+        : { ok: false, msg: "Deu errado: o clima azedou e deu ainda mais vontade de voltar ao futebol.", d: { pastor: -6, vontadeFutebol: 28 } }
+    }
+  ];
+
+  const state = {
+    started: false,
+    name: "Ronaldo Paz",
+    age: 29,
+    pos: "Atacante",
+    ovr: 32,
+    season: 1,
+    step: 0,
+    eventsPerSeason: 4,
+    moral: { pastor: 50, torcida: 50, tecnico: 50, time: 50 },
+    contract: null, // { type: 'club' | 'job', name, tier, c1, c2, salary, teams, pos }
+    playedMidTier: false,
+    vontadeFutebol: 40,
+    currentEvent: null,
+    resolved: false,
+    lastOutcome: null,
+    phase: "event" // 'event' | 'market'
+  };
+
+  function clamp(n, min = 0, max = 100) {
+    return Math.max(min, Math.min(max, n));
+  }
+
+  function applyDelta(d = {}) {
+    if (typeof d.pastor === "number") state.moral.pastor = clamp(state.moral.pastor + d.pastor);
+    if (typeof d.torcida === "number") state.moral.torcida = clamp(state.moral.torcida + d.torcida);
+    if (typeof d.tecnico === "number") state.moral.tecnico = clamp(state.moral.tecnico + d.tecnico);
+    if (typeof d.time === "number") state.moral.time = clamp(state.moral.time + d.time);
+    if (typeof d.ovr === "number") state.ovr = clamp(state.ovr + d.ovr, 25, 85);
+    if (typeof d.vontadeFutebol === "number") state.vontadeFutebol = clamp(state.vontadeFutebol + d.vontadeFutebol);
+  }
+
+  function assignInitialPlacement() {
+    const job = JOBS[Math.floor(Math.random() * JOBS.length)];
+    state.contract = {
+      type: "job",
+      name: job.name,
+      tier: "job",
+      c1: job.c1,
+      c2: job.c2,
+      salary: job.salary,
+      teams: null,
+      pos: null
+    };
+  }
+
+  function pickEventForStep() {
+    const isClub = state.contract && state.contract.type === "club";
+    const pool = isClub ? FOOTBALL_EVENTS : WORK_EVENTS;
+    const ev = pool[(state.season + state.step) % pool.length];
+    state.currentEvent = ev;
+    state.resolved = false;
+    state.lastOutcome = null;
+    state.phase = "event";
+
+    if (isClub && state.contract.teams) {
+      const shift = Math.floor(Math.random() * 5) - 2;
+      state.contract.pos = clamp(state.contract.pos + shift, 1, state.contract.teams);
+    }
+  }
+
+  function generateMarketOffer() {
+    const isJob = !state.contract || state.contract.type === "job";
+
+    // Chance de time grande (1 em 100) apenas após ter jogado no segundo escalão (mid)
+    if (state.playedMidTier && Math.random() < 0.01) {
+      const top = CLUBS_TOP[Math.floor(Math.random() * CLUBS_TOP.length)];
+      return {
+        kind: "offer",
+        date: "Fim de Temporada",
+        tag: "Série A • 1/100",
+        title: `Sondagem inesperada do ${top.name}`,
+        desc: `Após rodar no segundo escalão, surgiu uma chance raríssima na elite. Salário: R$ ${top.salary.toLocaleString("pt-BR")}/mês.`,
+        target: {
+          type: "club",
+          name: top.name,
+          tier: "top",
+          c1: top.c1,
+          c2: top.c2,
+          salary: top.salary,
+          teams: top.teams,
+          pos: Math.floor(Math.random() * 14) + 5
+        }
+      };
+    }
+
+    // Se está no trabalho e a vontade de voltar ao futebol está alta, prioriza clube pequeno/médio
+    if (isJob && state.vontadeFutebol >= 50) {
+      const useMid = state.ovr >= 38 && Math.random() < 0.25;
+      const list = useMid ? CLUBS_MID : CLUBS_LOW;
+      const c = list[Math.floor(Math.random() * list.length)];
+      return {
+        kind: "offer",
+        date: "Fim de Temporada",
+        tag: useMid ? "2º Escalão" : "Base / Interior",
+        title: `Convite do ${c.name}`,
+        desc: `A vontade de jogar falou alto. O clube oferece R$ ${c.salary.toLocaleString("pt-BR")}/mês para disputar a temporada.`,
+        target: {
+          type: "club",
+          name: c.name,
+          tier: c.tier,
+          c1: c.c1,
+          c2: c.c2,
+          salary: c.salary,
+          teams: c.teams,
+          pos: Math.floor(Math.random() * (c.teams - 2)) + 2
+        }
+      };
+    }
+
+    // Se já está em clube baixo e tem experiência/OVR, pode pintar 2º escalão (20% chance)
+    if (!isJob && state.contract.tier === "low" && (state.ovr >= 36 || state.moral.tecnico >= 65) && Math.random() < 0.2) {
+      const mid = CLUBS_MID[Math.floor(Math.random() * CLUBS_MID.length)];
+      return {
+        kind: "offer",
+        date: "Fim de Temporada",
+        tag: "2º Escalão",
+        title: `Proposta do ${mid.name}`,
+        desc: `Sua passagem no interior chamou atenção de um time mais estruturado. Salário: R$ ${mid.salary.toLocaleString("pt-BR")}/mês.`,
+        target: {
+          type: "club",
+          name: mid.name,
+          tier: "mid",
+          c1: mid.c1,
+          c2: mid.c2,
+          salary: mid.salary,
+          teams: mid.teams,
+          pos: Math.floor(Math.random() * 12) + 6
+        }
+      };
+    }
+
+    // Alternativa de trabalho ou renovação
+    if (!isJob) {
+      return {
+        kind: "offer",
+        date: "Fim de Temporada",
+        tag: "Contrato",
+        title: `Renovação com ${state.contract.name}`,
+        desc: `O clube topa manter você por mais uma temporada pagando R$ ${state.contract.salary.toLocaleString("pt-BR")}/mês.`,
+        target: { ...state.contract }
+      };
+    }
+
+    const j = JOBS[Math.floor(Math.random() * JOBS.length)];
+    return {
+      kind: "offer",
+      date: "Fim de Temporada",
+      tag: "Emprego",
+      title: `Vaga no ${j.name}`,
+      desc: `Sem proposta firme na bola agora, surge vaga certa pagando R$ ${j.salary.toLocaleString("pt-BR")}/mês.`,
+      target: {
+        type: "job",
+        name: j.name,
+        tier: "job",
+        c1: j.c1,
+        c2: j.c2,
+        salary: j.salary,
+        teams: null,
+        pos: null
+      }
+    };
+  }
+
+  function render() {
+    document.getElementById("playerName").textContent = state.name;
+    document.getElementById("playerMeta").textContent = `${state.age} anos • ${state.pos}`;
+    document.getElementById("ovrBadge").textContent = `OVR ${state.ovr}`;
+
+    document.getElementById("mPastor").textContent = state.moral.pastor;
+    document.getElementById("mTorcida").textContent = state.moral.torcida;
+    document.getElementById("mTecnico").textContent = state.moral.tecnico;
+    document.getElementById("mTime").textContent = state.moral.time;
+
+    const c = state.contract;
+    document.getElementById("dot1").style.background = c.c1;
+    document.getElementById("dot2").style.background = c.c2;
+    document.getElementById("clubTitle").textContent = c.name;
+    document.getElementById("standingInfo").textContent =
+      c.type === "club" && c.pos ? `${c.pos}º / ${c.teams} times` : "-";
+
+    document.getElementById("seasonInfo").textContent =
+      state.phase === "event"
+        ? `Temporada ${state.season} • ${state.step + 1}/${state.eventsPerSeason}`
+        : `Temporada ${state.season} • Encerramento`;
+
+    const card = document.getElementById("eventCard");
+    const btnNext = document.getElementById("btnNext");
+
+    if (state.phase === "event") {
+      const ev = state.currentEvent;
+      let outcomeHtml = "";
+      if (state.resolved && state.lastOutcome) {
+        outcomeHtml = `<div class="outcome-box ${state.lastOutcome.ok ? "" : "fail"}">${state.lastOutcome.msg}</div>`;
+      }
+
+      card.innerHTML = `
+        <div class="event-header">
+          <span>${ev.date}</span>
+          <span class="tag">${ev.tag}</span>
+        </div>
+        <h2 class="event-title">${ev.title}</h2>
+        <p class="event-desc">${ev.desc}</p>
+        ${!state.resolved ? `
+          <div class="choices">
+            <button class="btn-choice yes" id="btnYes">${ev.yesLabel}</button>
+            <button class="btn-choice no" id="btnNo">${ev.noLabel}</button>
+          </div>
+        ` : outcomeHtml}
+      `;
+
+      btnNext.disabled = !state.resolved;
+
+      if (!state.resolved) {
+        document.getElementById("btnYes").onclick = () => {
+          const res = ev.onYes();
+          applyDelta(res.d);
+          state.lastOutcome = res;
+          state.resolved = true;
+          render();
+        };
+        document.getElementById("btnNo").onclick = () => {
+          const res = ev.onNo();
+          applyDelta(res.d);
+          state.lastOutcome = res;
+          state.resolved = true;
+          render();
+        };
+      }
+    } else {
+      const offer = state.currentMarketOffer;
+      let outcomeHtml = "";
+      if (state.resolved && state.lastOutcome) {
+        outcomeHtml = `<div class="outcome-box ${state.lastOutcome.ok ? "" : "fail"}">${state.lastOutcome.msg}</div>`;
+      }
+
+      card.innerHTML = `
+        <div class="event-header">
+          <span>${offer.date}</span>
+          <span class="tag">${offer.tag}</span>
+        </div>
+        <h2 class="event-title">${offer.title}</h2>
+        <p class="event-desc">${offer.desc}</p>
+        ${!state.resolved ? `
+          <div class="choices">
+            <button class="btn-choice yes" id="btnAccept">Aceitar</button>
+            <button class="btn-choice no" id="btnDecline">Recusar</button>
+          </div>
+        ` : outcomeHtml}
+      `;
+
+      btnNext.disabled = !state.resolved;
+
+      if (!state.resolved) {
+        document.getElementById("btnAccept").onclick = () => {
+          state.contract = { ...offer.target };
+          if (state.contract.tier === "mid") {
+            state.playedMidTier = true;
+          }
+          if (state.contract.type === "club") {
+            state.vontadeFutebol = 20;
+          }
+          state.lastOutcome = {
+            ok: true,
+            msg: `Fechado: nova rotina em ${state.contract.name} (R$ ${state.contract.salary.toLocaleString("pt-BR")}/mês).`
+          };
+          state.resolved = true;
+          render();
+        };
+
+        document.getElementById("btnDecline").onclick = () => {
+          if (offer.target.type === "job") {
+            state.vontadeFutebol = clamp(state.vontadeFutebol + 10);
+          }
+          state.lastOutcome = {
+            ok: false,
+            msg: "Recusado: você preferiu aguardar os próximos passos da carreira."
+          };
+          state.resolved = true;
+          render();
+        };
+      }
+    }
+  }
+
+  function advance() {
+    if (!state.resolved) return;
+
+    if (state.phase === "event") {
+      state.step += 1;
+      if (state.step < state.eventsPerSeason) {
+        pickEventForStep();
+      } else {
+        state.phase = "market";
+        state.resolved = false;
+        state.lastOutcome = null;
+        state.currentMarketOffer = generateMarketOffer();
+      }
+      render();
+    } else {
+      state.season += 1;
+      state.age += 1;
+      state.step = 0;
+      pickEventForStep();
+      render();
+    }
+  }
+
+  document.getElementById("btnStart").addEventListener("click", () => {
+    document.getElementById("startScreen").classList.add("hidden");
+    document.getElementById("gameScreen").classList.add("active");
+    assignInitialPlacement();
+    pickEventForStep();
+    render();
+  });
+
+  document.getElementById("btnNext").addEventListener("click", advance);
+</script>
+</body>
+</html>
