@@ -1,813 +1,150 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-<meta name="theme-color" content="#0b1118" />
-<meta name="mobile-web-app-capable" content="yes" />
-<title>O Bagre</title>
-<style>
-  :root {
-    --bg: #0b1118;
-    --card: #121b26;
-    --card-2: #172230;
-    --card-3: #1d2b3d;
-    --text: #eef3f8;
-    --muted: #93a6bc;
-    --accent: #22c55e;
-    --accent-hover: #16a34a;
-    --danger: #ef4444;
-    --border: rgba(255, 255, 255, 0.09);
-  }
-
-  * {
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  html, body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100dvh;
-    background: var(--bg);
-    color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    overflow: hidden;
-  }
-
-  .app-shell {
-    width: 100%;
-    height: 100dvh;
-    max-width: 480px;
-    margin: 0 auto;
-    background: radial-gradient(circle at top, #142436 0%, var(--bg) 62%);
-    display: flex;
-    flex-direction: column;
-    padding: env(safe-area-inset-top, 10px) 12px env(safe-area-inset-bottom, 12px);
-  }
-
-  .screen {
-    display: none;
-    flex: 1;
-    min-height: 0;
-    flex-direction: column;
-  }
-
-  .screen.active {
-    display: flex;
-  }
-
-  .start-screen {
-    justify-content: space-between;
-    align-items: center;
-    padding: 28px 16px 14px;
-    text-align: center;
-  }
-
-  .logo-box {
-    margin-top: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .title {
-    margin: 0;
-    font-size: 2.35rem;
-    font-weight: 900;
-    letter-spacing: -0.02em;
-  }
-
-  .subtitle {
-    margin: 0;
-    font-size: 0.9rem;
-    color: var(--muted);
-    max-width: 290px;
-    line-height: 1.4;
-  }
-
-  .btn-play {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    background: var(--accent);
-    color: #052e16;
-    border: none;
-    border-radius: 999px;
-    padding: 16px 38px;
-    font-size: 1.1rem;
-    font-weight: 900;
-    cursor: pointer;
-    box-shadow: 0 10px 26px rgba(34, 197, 94, 0.32);
-    min-height: 54px;
-  }
-
-  .btn-play:active {
-    transform: scale(0.97);
-    background: var(--accent-hover);
-  }
-
-  .ball-dot {
-    width: 15px;
-    height: 15px;
-    border-radius: 50%;
-    background: #ffffff;
-    border: 2px solid #052e16;
-    display: inline-block;
-  }
-
-  .credit {
-    font-size: 0.75rem;
-    color: var(--muted);
-    opacity: 0.85;
-  }
-
-  .setup-screen {
-    gap: 10px;
-    padding-top: 6px;
-  }
-
-  .setup-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .setup-header h2 {
-    margin: 0;
-    font-size: 1.15rem;
-    font-weight: 800;
-  }
-
-  .setup-scroll {
-    flex: 1;
-    min-height: 0;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding-right: 2px;
-  }
-
-  .field-group {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .field-label {
-    font-size: 0.78rem;
-    font-weight: 700;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-  }
-
-  .text-input {
-    width: 100%;
-    background: var(--card-2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 12px 14px;
-    color: var(--text);
-    font-size: 0.98rem;
-    outline: none;
-  }
-
-  .text-input:focus {
-    border-color: var(--accent);
-  }
-
-  .option-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 8px;
-  }
-
-  .option-btn {
-    width: 100%;
-    text-align: left;
-    background: var(--card-2);
-    border: 1px solid var(--border);
-    border-radius: 13px;
-    padding: 11px 12px;
-    color: var(--text);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-  }
-
-  .option-btn.selected {
-    border-color: var(--accent);
-    background: rgba(34, 197, 94, 0.14);
-  }
-
-  .opt-main {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    font-weight: 700;
-    font-size: 0.9rem;
-  }
-
-  .opt-sub {
-    font-size: 0.76rem;
-    color: var(--muted);
-    margin-top: 2px;
-  }
-
-  .btn-confirm {
-    width: 100%;
-    background: var(--accent);
-    color: #052e16;
-    border: none;
-    border-radius: 15px;
-    padding: 14px;
-    font-size: 1rem;
-    font-weight: 900;
-    cursor: pointer;
-    min-height: 50px;
-  }
-
-  .game-screen {
-    gap: 8px;
-    justify-content: space-between;
-  }
-
-  .top-player {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 9px 12px;
-  }
-
-  .player-left {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    min-width: 0;
-  }
-
-  .avatar {
-    width: 42px;
-    height: 42px;
-    border-radius: 12px;
-    background: var(--card-3);
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-
-  .player-name {
-    font-size: 0.92rem;
-    font-weight: 800;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .player-meta {
-    font-size: 0.74rem;
-    color: var(--muted);
-  }
-
-  .ovr-badge {
-    background: rgba(34, 197, 94, 0.16);
-    color: #4ade80;
-    border: 1px solid rgba(34, 197, 94, 0.4);
-    border-radius: 11px;
-    padding: 6px 10px;
-    font-weight: 900;
-    font-size: 0.85rem;
-    flex-shrink: 0;
-  }
-
-  .morals {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 6px;
-  }
-
-  .moral-chip {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 6px 6px;
-    text-align: center;
-  }
-
-  .moral-label {
-    font-size: 0.65rem;
-    color: var(--muted);
-    display: block;
-  }
-
-  .moral-val {
-    font-size: 0.88rem;
-    font-weight: 800;
-  }
-
-  .club-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 8px 12px;
-    font-size: 0.8rem;
-    gap: 8px;
-  }
-
-  .club-identity {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-weight: 700;
-    min-width: 0;
-  }
-
-  .club-name-txt {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .color-dots {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    flex-shrink: 0;
-  }
-
-  .dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    border: 1px solid rgba(255, 255, 255, 0.28);
-  }
-
-  .standing-pill {
-    color: var(--muted);
-    font-weight: 700;
-    font-size: 0.76rem;
-    flex-shrink: 0;
-  }
-
-  .center-stage {
-    flex: 1;
-    min-height: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .event-card {
-    width: 100%;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 11px;
-  }
-
-  .event-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.74rem;
-    color: var(--muted);
-  }
-
-  .tag {
-    background: rgba(255, 255, 255, 0.07);
-    padding: 3px 9px;
-    border-radius: 999px;
-    color: #dbeafe;
-    font-weight: 700;
-  }
-
-  .event-title {
-    margin: 0;
-    font-size: 1.08rem;
-    line-height: 1.28;
-  }
-
-  .event-desc {
-    margin: 0;
-    font-size: 0.88rem;
-    line-height: 1.45;
-    color: #cbd5e1;
-  }
-
-  .choices {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-top: 2px;
-  }
-
-  .btn-choice {
-    width: 100%;
-    padding: 12px 14px;
-    border-radius: 13px;
-    border: 1px solid var(--border);
-    font-weight: 700;
-    font-size: 0.88rem;
-    cursor: pointer;
-    background: var(--card-2);
-    color: var(--text);
-    text-align: left;
-    min-height: 46px;
-  }
-
-  .btn-choice.yes {
-    background: rgba(34, 197, 94, 0.15);
-    border-color: rgba(34, 197, 94, 0.45);
-    color: #86efac;
-  }
-
-  .btn-choice.no {
-    background: rgba(239, 68, 68, 0.14);
-    border-color: rgba(239, 68, 68, 0.4);
-    color: #fca5a5;
-  }
-
-  .outcome-box {
-    background: rgba(255, 255, 255, 0.04);
-    border-left: 3px solid var(--accent);
-    border-radius: 10px;
-    padding: 10px 12px;
-    font-size: 0.85rem;
-    line-height: 1.4;
-  }
-
-  .outcome-box.fail {
-    border-left-color: var(--danger);
-  }
-
-  .bottom-nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 4px 2px;
-  }
-
-  .season-info {
-    font-size: 0.76rem;
-    color: var(--muted);
-    font-weight: 600;
-  }
-
-  .btn-arrow {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    border: none;
-    background: var(--accent);
-    color: #052e16;
-    font-size: 1.3rem;
-    font-weight: 900;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 6px 18px rgba(34, 197, 94, 0.28);
-  }
-
-  .btn-arrow:disabled {
-    opacity: 0.25;
-    cursor: not-allowed;
-    box-shadow: none;
-  }
-</style>
-</head>
-<body>
-<div class="app-shell">
-  <section class="screen start-screen active" id="startScreen">
-    <div class="logo-box">
-      <svg width="98" height="98" viewBox="0 0 96 96" fill="none" aria-label="Logo O Bagre">
-        <circle cx="48" cy="48" r="44" fill="#172230" stroke="#22c55e" stroke-width="2" />
-        <path d="M20 46C28 32 46 30 60 40L72 32V60L60 52C46 62 28 60 20 46Z" fill="#38bdf8" stroke="#e0f2fe" stroke-width="2" stroke-linejoin="round" />
-        <circle cx="31" cy="44" r="2.5" fill="#0b1118" />
-        <circle cx="56" cy="64" r="11" fill="#ffffff" stroke="#0b1118" stroke-width="2" />
-        <polygon points="56,57 61,61 59,67 53,67 51,61" fill="#0b1118" />
-      </svg>
-      <h1 class="title">O Bagre</h1>
-      <p class="subtitle">Dos 16 anos tentando virar jogador sem estourar o joelho nem a paciência.</p>
-    </div>
-
-    <button class="btn-play" id="btnGoSetup" type="button">
-      <span class="ball-dot"></span>
-      <span>JOGAR</span>
-    </button>
-
-    <div class="credit">desenvolvido por Ronaldo Paz</div>
-  </section>
-
-  <section class="screen setup-screen" id="setupScreen">
-    <div class="setup-header">
-      <h2>Montar Bagre (16 anos)</h2>
-      <span class="credit">desenvolvido por Ronaldo Paz</span>
-    </div>
-
-    <div class="setup-scroll">
-      <div class="field-group">
-        <label class="field-label" for="inputName">Seu nome</label>
-        <input class="text-input" id="inputName" type="text" maxlength="26" placeholder="Ex: Bagre da Vila" value="Bagre da Vila" />
-      </div>
-
-      <div class="field-group">
-        <span class="field-label">Estilo do jogador</span>
-        <div class="option-grid" id="styleOptions"></div>
-      </div>
-
-      <div class="field-group">
-        <span class="field-label">Onde começa aos 16 anos</span>
-        <div class="option-grid" id="startOptions"></div>
-      </div>
-    </div>
-
-    <button class="btn-confirm" id="btnStartCareer" type="button">Começar aos 16 anos</button>
-  </section>
-
-  <main class="screen game-screen" id="gameScreen">
-    <div class="top-player">
-      <div class="player-left">
-        <div class="avatar" aria-hidden="true">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
-            <circle cx="12" cy="8" r="4" fill="#cbd5e1" />
-            <path d="M5 20C5 16.5 8.1 14 12 14C15.9 14 19 16.5 19 20" stroke="#cbd5e1" stroke-width="2" stroke-linecap="round" />
-          </svg>
-        </div>
-        <div style="min-width:0;">
-          <div class="player-name" id="playerName">Bagre da Vila</div>
-          <div class="player-meta" id="playerMeta">16 anos • Farrista</div>
-        </div>
-      </div>
-      <div class="ovr-badge" id="ovrBadge">OVR 31</div>
-    </div>
-
-    <div class="morals">
-      <div class="moral-chip">
-        <span class="moral-label">Pastor</span>
-        <span class="moral-val" id="mPastor">50</span>
-      </div>
-      <div class="moral-chip">
-        <span class="moral-label">Torcida</span>
-        <span class="moral-val" id="mTorcida">50</span>
-      </div>
-      <div class="moral-chip">
-        <span class="moral-label">Técnico</span>
-        <span class="moral-val" id="mTecnico">50</span>
-      </div>
-      <div class="moral-chip">
-        <span class="moral-label">Time</span>
-        <span class="moral-val" id="mTime">50</span>
-      </div>
-    </div>
-
-    <div class="club-bar">
-      <div class="club-identity">
-        <span class="color-dots">
-          <span class="dot" id="dot1"></span>
-          <span class="dot" id="dot2"></span>
-        </span>
-        <span class="club-name-txt" id="clubTitle">Sem Clube</span>
-      </div>
-      <div class="standing-pill" id="standingInfo">-</div>
-    </div>
-
-    <div class="center-stage">
-      <div class="event-card" id="eventCard"></div>
-    </div>
-
-    <div class="bottom-nav">
-      <span class="season-info" id="seasonInfo">Temporada 1 • 1/4</span>
-      <button class="btn-arrow" id="btnNext" title="Avançar" aria-label="Avançar" type="button">➔</button>
-    </div>
-  </main>
-</div>
-
-<script>
-(function () {
-  const STYLES = [
-    {
-      id: "farrista",
-      label: "Farrista",
-      desc: "Resenha, churrasco e madrugadas; sobe Torcida/Time, mas derruba Pastor e Técnico.",
-      init: { pastor: 35, torcida: 62, tecnico: 40, time: 60 },
-      mod: { torcida: 2, tecnico: -2, pastor: -2 }
-    },
-    {
-      id: "crente",
-      label: "Crente",
-      desc: "Culto, postura e oração; moral alta com Pastor e Técnico, mas às vezes cobra na resenha.",
-      init: { pastor: 75, torcida: 50, tecnico: 55, time: 45 },
-      mod: { pastor: 3, time: -1 }
-    },
-    {
-      id: "maria_vai",
-      label: "Maria vai com as outras",
-      desc: "Segue a onda do elenco ou do momento; oscila bastante dependendo da fase.",
-      init: { pastor: 50, torcida: 50, tecnico: 50, time: 55 },
-      mod: { time: 2, tecnico: -1 }
-    }
-  ];
-
-  const START_CHOICES = [
-    {
-      id: "pedreira",
-      label: "Atlético da Pedreira (4ª Divisão)",
-      sub: "Timão de várzea/acesso • R$ 700/mês • 12 times",
-      data: { type: "club", name: "Atlético da Pedreira FC", tier: "low", c1: "#dc2626", c2: "#111827", salary: 700, teams: 12, pos: 10 }
-    },
-    {
-      id: "brejo",
-      label: "União do Brejo EC (3ª Divisão)",
-      sub: "Divisão inferior • R$ 850/mês • 12 times",
-      data: { type: "club", name: "União do Brejo EC", tier: "low", c1: "#16a34a", c2: "#fef08a", salary: 850, teams: 12, pos: 8 }
-    },
-    {
-      id: "atacadao",
-      label: "Atacadão Central (Repositor)",
-      sub: "Sem clube no momento • R$ 1.520/mês • Classificação em branco",
-      data: { type: "job", name: "Atacadão Central (Repositor)", tier: "job", c1: "#eab308", c2: "#1d4ed8", salary: 1520, teams: null, pos: null }
-    },
-    {
-      id: "verdurao",
-      label: "Verdurão do Seu Zé",
-      sub: "Sem clube no momento • R$ 1.250/mês • Classificação em branco",
-      data: { type: "job", name: "Verdurão do Seu Zé", tier: "job", c1: "#16a34a", c2: "#f97316", salary: 1250, teams: null, pos: null }
-    }
-  ];
-
-  const CLUBS_LOW_POOL = [
-    { name: "Deportivo El Alto (Bolívia 2ª Div)", tier: "low", c1: "#0284c7", c2: "#facc15", salary: 1100, teams: 14 },
-    { name: "KS Dinamo Tirana B (Albânia)", tier: "low", c1: "#e11d48", c2: "#1e293b", salary: 1300, teams: 10 },
-    { name: "Dhaka Wanderers (Bangladesh)", tier: "low", c1: "#16a34a", c2: "#dc2626", salary: 950, teams: 12 },
-    { name: "Estrela do Sertão FC (Série D)", tier: "low", c1: "#0284c7", c2: "#ffffff", salary: 1200, teams: 16 },
-    { name: "Cangaceiros do Agreste (3ª Div)", tier: "low", c1: "#7c2d12", c2: "#fde047", salary: 800, teams: 12 },
-    { name: "Vila Nova do Pajeú (4ª Div)", tier: "low", c1: "#2563eb", c2: "#ffffff", salary: 1050, teams: 14 },
-    { name: "FC Santa Coloma II (Andorra)", tier: "low", c1: "#dc2626", c2: "#facc15", salary: 1150, teams: 10 },
-    { name: "Rangers de Talca B (Chile B)", tier: "low", c1: "#1e3a8a", c2: "#dc2626", salary: 1250, teams: 16 }
-  ];
-
-  const CLUBS_MID_POOL = [
-    { name: "Sertão Forte Esporte (Série C)", tier: "mid", c1: "#f97316", c2: "#1e293b", salary: 2800, teams: 20 },
-    { name: "Portuguesa do Vale (Série B)", tier: "mid", c1: "#15803d", c2: "#b91c1c", salary: 3400, teams: 20 },
-    { name: "Club Deportivo San José (Bolívia A)", tier: "mid", c1: "#1e40af", c2: "#ffffff", salary: 3100, teams: 16 },
-    { name: "KF Skënderbeu (2ª Albânia)", tier: "mid", c1: "#b91c1c", c2: "#ffffff", salary: 3600, teams: 14 }
-  ];
-
-  const CLUBS_TOP_POOL = [
-    { name: "Esporte Clube Bahia", tier: "top", c1: "#1d4ed8", c2: "#dc2626", salary: 22000, teams: 20 },
-    { name: "CR Flamengo", tier: "top", c1: "#dc2626", c2: "#111827", salary: 30000, teams: 20 }
-  ];
-
-  const JOBS_POOL = [
-    { name: "Atacadão Central (Repositor)", c1: "#eab308", c2: "#1d4ed8", salary: 1520 },
-    { name: "Mercadinho Bom Preço", c1: "#22c55e", c2: "#ffffff", salary: 1380 },
-    { name: "Verdurão do Seu Zé", c1: "#16a34a", c2: "#f97316", salary: 1250 },
-    { name: "Lava-Jato Espuma do Cerrado", c1: "#0ea5e9", c2: "#facc15", salary: 1350 },
-    { name: "Funilaria Martelo de Ouro", c1: "#64748b", c2: "#ef4444", salary: 1500 },
-    { name: "Depósito de Tijolo Rocha", c1: "#ea580c", c2: "#1e293b", salary: 1480 }
-  ];
-
-  const MONTHS_POOL = [
-    "11 de Fevereiro", "03 de Março", "19 de Abril", "08 de Maio",
-    "16 de Junho", "24 de Julho", "12 de Agosto", "07 de Setembro",
-    "18 de Outubro", "29 de Novembro"
-  ];
-
-  const BASE_FOOTBALL_SCENARIOS = [
-    {
-      tag: "Canela dura",
-      title: "Dominou a bola com a canela no treino",
-      desc: "A bola espirrou 3 metros e virou contra-ataque. O preparador físico colocou a mão na cabeça.",
-      yesLabel: "Culpar o gramado irregular e pedir repeteco",
-      noLabel: "Dizer que foi passe de calcanhar calculado",
-      onYes: () => Math.random() < 0.5
-        ? { ok: true, msg: "Deu certo: o gramado tava mesmo cheio de buraco e o técnico relevou.", d: { tecnico: 3, time: 2 } }
-        : { ok: false, msg: "Deu errado: o auxiliar anotou na prancheta que o domínio não sai.", d: { tecnico: -6, ovr: -1 } },
-      onNo: () => Math.random() < 0.5
-        ? { ok: true, msg: "Deu certo: o vestiário caiu na risada com a cara de pau.", d: { time: 6, torcida: 3 } }
-        : { ok: false, msg: "Deu errado: o capitão mandou parar de gracinha e correr.", d: { time: -6, pastor: -4 } }
-    },
-    {
-      tag: "Vestiário",
-      title: "Chuteira furada presa com fita isolante",
-      desc: "A sola abriu no meio da semana e o roupeiro só tem chuteira velha sobrando.",
-      yesLabel: "Passar duas voltas de fita isolante e ir pro jogo",
-      noLabel: "Pegar emprestado um par apertado do reserva",
-      onYes: () => Math.random() < 0.5
-        ? { ok: true, msg: "Deu certo: a fita aguentou firme até o apito final.", d: { torcida: 7, time: 4 } }
-        : { ok: false, msg: "Deu errado: a sola descolou no primeiro pique longo.", d: { tecnico: -5, torcida: -4 } },
-      onNo: () => Math.random() < 0.5
-        ? { ok: true, msg: "Deu certo: a chuteira encaixou bem e você arriscou um chute.", d: { time: 5, ovr: 1 } }
-        : { ok: false, msg: "Deu errado: apertou os dedos e você saiu mancando.", d: { tecnico: -4 } }
-    },
-    {
-      tag: "Ligas Alternativas",
-      title: "Partida na altitude e clima hostil",
-      desc: "No aquecimento já faltou ar e a torcida local faz pressão desde o hino.",
-      yesLabel: "Puxar oxigênio e segurar o ritmo no começo",
-      noLabel: "Dosar o gás e jogar simples sem se afobar",
-      onYes: () => Math.random() < 0.5
-        ? { ok: true, msg: "Deu certo: recuperou o fôlego e aguentou bem a pressão.", d: { tecnico: 6, pastor: 3 } }
-        : { ok: false, msg: "Deu errado: deu tontura e você errou um passe curto.", d: { torcida: -7, tecnico: -5 } },
-      onNo: () => Math.random() < 0.5
-        ? { ok: true, msg: "Deu certo: jogou com inteligência dentro das limitações.", d: { time: 5, tecnico: 3 } }
-        : { ok: false, msg: "Deu errado: acharam que você tava correndo pouco.", d: { torcida: -7 } }
-    },
-    {
-      tag: "Perrengue de Viagem",
-      title: "Van encostou no acostamento antes da rodada",
-      desc: "O calor aperta na estrada e o elenco precisa decidir como lidar com o atraso.",
-      yesLabel: "Ajudar no que der pra destravar a viagem",
-      noLabel: "Ficar na sombra descansando as pernas",
-      onYes: () => Math.random() < 0.5
-        ? { ok: true, msg: "Deu certo: clima de união fortaleceu o grupo antes do jogo.", d: { time: 8, pastor: 3 } }
-        : { ok: false, msg: "Deu errado: cansou no sol forte e entrou pesado.", d: { tecnico: -5, ovr: -1 } },
-      onNo: () => Math.random() < 0.5
-        ? { ok: true, msg: "Deu certo: pernas descansadas ajudaram nos minutos finais.", d: { time: 3 } }
-        : { ok: false, msg: "Deu errado: saiu foto sua moscando e pegou mal no grupo.", d: { time: -8, pastor: -4 } }
-    },
-    {
-      tag: "Humor Perna de Pau",
-      title: "Finalização isolada que quase acertou o placar",
-      desc: "A bola sobrou limpa na entrada da área e o chute subiu muito além do travessão.",
-      yesLabel: "Levantar o braço e culpar a bola leve",
-      noLabel: "Voltar rápido na marcação sem reclamar",
-      onYes: () => Math.random() < 0.5
-        ? { ok: true, msg: "Deu certo: ninguém levou pro lado pessoal e o jogo seguiu.", d: { torcida: 3 } }
-        : { ok: false, msg: "Deu errado: a arquibancada caçoou da sua pontaria.", d: { torcida: -8, tecnico: -4 } },
-      onNo: () => Math.random() < 0.5
-        ? { ok: true, msg: "Deu certo: compensou o chute torto com dedicação.", d: { tecnico: 6, time: 5 } }
-        : { ok: false, msg: "Deu errado: o banco lamentou a chance desperdiçada.", d: { tecnico: -6 } }
-    },
-    {
-      tag: "Mercado da Bola",
-      title: "Companheiro de elenco fechou com gigante",
-      desc: "Um colega do grupo acertou com o Bahia após uma sequência boa, enquanto você segue lutando por espaço.",
-      yesLabel: "Pedir conselho sobre empresários e testes",
-      noLabel: "Focar em treino extra de fundamento básico",
-      onYes: () => Math.random() < 0.5
-        ? { ok: true, msg: "Deu certo: ganhou dicas práticas de bastidor.", d: { pastor: 4, time: 4 } }
-        : { ok: false, msg: "Deu errado: ouviu piada sobre precisar melhorar o domínio.", d: { time: -5 } },
-      onNo: () => Math.random() < 0.5
-        ? { ok: true, msg: "Deu certo: o treino repetitivo evoluiu seu OVR.", d: { tecnico: 7, ovr: 1 } }
-        : { ok: false, msg: "Deu errado: forçou demais e sentiu desconforto muscular.", d: { tecnico: -6 } }
-    },
-    {
-      tag: "Patrocínio Local",
-      title: "Apoio da Cabeleireira Leila e comércio do bairro",
-      desc: "Comércio local oferece corte, estética e um pequeno agrado em troca de divulgação.",
-      yesLabel: "Aceitar o apoio local e fazer a mídia",
-      noLabel: "Recusar e manter foco apenas nos treinos",
-      onYes: () => Math.random() < 0.5
-        ? { ok: true, msg: "Deu certo: visual em dia e moral com a comunidade.", d: { torcida: 7, time: 3 } }
-        : { ok: false, msg: "Deu errado: o corte ficou ousado demais e virou resenha.", d: { time: -6, torcida: -4 } },
-      onNo: () => Math.random() < 0.5
-        ? { ok: true, msg: "Deu certo: comissão enxergou seriedade no seu foco.", d: { tecnico: 5, pastor: 3 } }
-        : { ok: false, msg: "Deu errado: perdeu um agrado simples do dia a dia.", d: { torcida: -3 } }
-    },
-    {
-      tag: "Escolha Moral",
-      title: "Convite de aposta e bebida antes da rodada",
-      desc: "Surgiu proposta fácil para marcar presença em evento com apostas e bebida na véspera.",
-      yesLabel: "Aceitar o dinheiro fácil",
-      noLabel: "Recusar o convite",
-      onYes: () => Math.random() < 0.5
-        ? { ok: true, msg: "Deu certo: entrou uma grana rápida e a turma curtiu.", d: { time: 5, pastor: -6 } }
-        : { ok: false, msg: "Deu errado: repercutiu mal com Pastor, Técnico e elenco.", d: { pastor: -10, tecnico: -8, torcida: -5 } },
-      onNo: () => Math.random() < 0.5
-        ? { ok: true, msg: "Deu certo: manteve o compromisso e ganhou respeito.", d: { pastor: 8, tecnico: 5 } }
-        : { ok: false, msg: "Deu errado: deixou uma grana fácil passar.", d: { time: -3 } }
-    }
-  ];
-
-  const BASE_WORK_SCENARIOS = [
-    {
-      tag: "Firma / Estoque",
-      title: "Carga pesada no estoque no horário do jogo",
-      desc: "Sem clube no momento, o turno exige braço enquanto você ouve comentários da rodada.",
-      yesLabel: "Segurar a bronca e cumprir a meta do turno",
-      noLabel: "Pedir troca para tarefa mais leve",
-      onYes: () =>
+<!-- ... existing code ... -->
+          const teamLabel = state.nationalTeamName;
+          const canWinWorldCup = state.isTop20NationalTeam && (state.contract.tier === 3 || state.ovr >= 78);
+          const isAltWorldCup = !state.isTop20NationalTeam && (state.season % 2 === 0 || Math.random() < 0.35);
+          const isWorldCup = state.season % 2 === 0 && canWinWorldCup;
+
+          if (isAltWorldCup) {
+            state.selecaoCaps += 3;
+            state.stats.games += 3;
+            state.seasonStats.games += 3;
+            const wcQualTitle = `Classificação Inédita para a Copa (${teamLabel})`;
+
+            return {
+              tag: `${teamLabel} • Eliminatórias / Copa do Mundo`,
+              title: `Histórico! ${teamLabel} na Copa do Mundo!`,
+              desc: `Você ajudou ${teamLabel} a conseguir uma classificação inédita para a Copa do Mundo! No torneio a seleção foi o saco de pancadas do grupo (levando goleadas), mas você apareceu na vitrine mundial!`,
+              yesLabel: "Dar carrinho na bandeirinha e honrar a camisa na goleada",
+              noLabel: "Pedir foto com os craques adversários após o apito",
+              onYes: () => {
+                state.altWorldCupShowcase = true;
+                if (!state.titles.includes(wcQualTitle)) state.titles.push(wcQualTitle);
+                return {
+                  ok: true,
+                  msg: `Mesmo tomando 6x0 na fase de grupos, sua raça viralizou! A vitrine da Copa aumentou suas chances de ir para um clube melhor (40% Série B / 10% Gigantes)!`,
+                  d: { torcida: 18, time: 10, ovr: 2 }
+                };
+              },
+              onNo: () => {
+                state.altWorldCupShowcase = true;
+                if (!state.titles.includes(wcQualTitle)) state.titles.push(wcQualTitle);
+                return {
+                  ok: true,
+                  msg: `Saco de pancadas no placar, mas vitrine garantida! Empresários anotaram seu nome (40% Série B / 10% Gigantes na janela)!`,
+                  d: { torcida: 12, time: 6, ovr: 1 }
+                };
+              }
+            };
+          }
+
+          const compName = isWorldCup
+            ? "Copa do Mundo"
+            : state.isNaturalized
+              ? (state.nationalTeamComp || "Amistoso Internacional")
+              : (state.nationality.altComp || "Amistoso Internacional");
+          const isFriendly = compName.toLowerCase().includes("amistoso");
+          const winAchievement = isFriendly
+            ? `Vitória Histórica em ${compName} (${teamLabel})`
+            : `Campeão da ${compName} (${teamLabel})`;
+<!-- ... existing code ... -->
+        isTop20NationalTeam: true,
+        isNaturalized: false,
+        altWorldCupShowcase: false,
+        stats: {
+<!-- ... existing code ... -->
+      function buildSeasonReviewCard() {
+        const s = state.season;
+        const c = state.contract;
+        const colleague = getNextColega();
+        const rivalClub = pickRandom(RIVAL_COLEGA_CLUBS);
+        const insult = getContextualInsult();
+        const showcaseActive = state.altWorldCupShowcase;
+        const tier1Chance = showcaseActive ? 0.40 : 0.20;
+        const tier2Chance = showcaseActive ? 0.10 : 0.05;
+        const showcaseTag = showcaseActive ? " • 🌟 Vitrine da Copa!" : "";
+
+        // Registrar histórico da temporada na tabela
+        state.history.push({
+          season: s,
+          age: state.age,
+          club: c.name,
+          flag: c.flag || "🌍",
+          ovr: state.ovr,
+          games: state.seasonStats.games,
+          goals: state.seasonStats.goals,
+          assists: state.seasonStats.assists,
+          cards: `${state.seasonStats.yellows}A/${state.seasonStats.reds}V`,
+          info: c.type === "club" ? `${c.pos}º/${c.teams}` : `${c.rankTitle}`
+        });
+
+        // Caso 1: Jogador está trabalhando CLT
+        if (c.type === "job") {
+<!-- ... existing code ... -->
+        // Caso 2: Jogador está na Várzea / Divisão Inferior (Tier 0)
+        if (c.tier === 0) {
+          const goodSeason = (state.moral.tecnico >= 52 && state.moral.torcida >= 48) || state.ovr >= 42 || showcaseActive;
+          const roll = Math.random();
+
+          // Salto direto pela vitrine da Copa Alternativa (10/100 para Gigantes ou 40/100 para Série B)
+          if (showcaseActive && roll < tier2Chance) {
+            const topClub = pickRandom(TIER2_CLUBS);
+            state.altWorldCupShowcase = false;
+            return {
+              tag: `Balanço Temporada ${s} • 🌟 Vitrine da Copa`,
+              title: `Gigante ${topClub.flag} ${topClub.name} te contratou após a Copa!`,
+              desc: `Mesmo sendo saco de pancadas na Copa, você chamou atenção mundial (chance 10/100)! ${colleague} foi para o ${rivalClub} e você fechou com ${topClub.flag} ${topClub.name} (${formatMoney(topClub.salary)}/mês).`,
+              yesLabel: `Assinar com ${topClub.flag} ${topClub.name}`,
+              noLabel: `Recusar e seguir no ${c.name}`,
+              onYes: () => {
+                state.contract = Object.assign({ type: "club", pos: 12 }, topClub);
+                return { ok: true, msg: `Contrato assinado com ${topClub.flag} ${topClub.name}!`, d: { torcida: 15, ovr: 2 } };
+              },
+              onNo: () => ({ ok: true, msg: `Você recusou a elite e ficou no ${c.name}.`, d: { torcida: 10 } })
+            };
+          }
+
+          if (goodSeason && roll < tier1Chance) {
+            const nextClub = pickRandom(TIER1_CLUBS);
+            state.altWorldCupShowcase = false;
+            return {
+              tag: `Balanço Temporada ${s} • Acesso (${Math.round(tier1Chance * 100)}/100)${showcaseTag}`,
+              title: `Proposta de Série B / Championship!`,
+              desc: `${colleague} foi comprado pelo ${rivalClub}, mas você surpreendeu (${Math.round(tier1Chance * 100)}/100)${showcaseActive ? " graças à vitrine na Copa do Mundo" : ""}! Proposta do ${nextClub.flag} ${nextClub.name} (${formatMoney(nextClub.salary)}/mês).`,
+              yesLabel: `Assinar com ${nextClub.flag} ${nextClub.name}`,
+              noLabel: `Recusar e ficar no ${c.name}`,
+              onYes: () => {
+                state.contract = Object.assign({ type: "club", pos: Math.ceil(nextClub.teams * 0.7) }, nextClub);
+                return { ok: true, msg: `Você subiu de patamar! Novo reforço do ${nextClub.flag} ${nextClub.name}.`, d: { torcida: 10, ovr: 2 } };
+              },
+              onNo: () => ({ ok: true, msg: `Você recusou a proposta e virou ídolo local.`, d: { torcida: 12, time: 6 } })
+            };
+          }
+<!-- ... existing code ... -->
+        // Caso 3: Jogador está na Série B / Championship / Segunda (Tier 1)
+        if (c.tier === 1) {
+          const goodSeason = state.moral.tecnico >= 58 && state.ovr >= 54;
+          const roll = Math.random();
+
+          // Chance 10/100 de dar certo e ir para a Série A / Gigante (ou 40/100 de outra proposta forte de Série B)
+          if ((goodSeason || showcaseActive) && roll < (showcaseActive ? 0.10 : 0.10)) {
+            const topClub = pickRandom(TIER2_CLUBS);
+            state.altWorldCupShowcase = false;
+            return {
+              tag: `Balanço Temporada ${s} • Elite (10/100)${showcaseTag}`,
+              title: `Proposta da Série A / Grande Clube!`,
+              desc: `Você contrariou as estatísticas (10/100)${showcaseActive ? " impulsionado pela Copa do Mundo" : ""}! Enquanto ${colleague} fechou com o ${rivalClub}, o ${topClub.flag} ${topClub.name} ofereceu ${formatMoney(topClub.salary)}/mês!`,
+              yesLabel: `Fechar com ${topClub.flag} ${topClub.name}`,
+              noLabel: `Permanecer no ${c.name}`,
+              onYes: () => {
+                state.contract = Object.assign({ type: "club", pos: 12 }, topClub);
+                return { ok: true, msg: `Inacreditável! Você chegou na elite com o ${topClub.flag} ${topClub.name}!`, d: { torcida: 15, ovr: 2 } };
+              },
+              onNo: () => ({ ok: true, msg: `Você recusou a Série A para ficar no ${c.name}.`, d: { torcida: 10 } })
+            };
+          }
+<!-- ... existing code ... -->
+        state.isTop20NationalTeam = Boolean(state.nationality.top20);
+        state.isNaturalized = false;
+        state.altWorldCupShowcase = false;
+        state.stats = { games: 0, goals: 0, assists: 0, yellows: 0, reds: 0 };
+<!-- ... existing code ... -->
