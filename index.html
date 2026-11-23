@@ -616,21 +616,21 @@
     {
       id: "farrista",
       label: "Farrista",
-      desc: "Resenha, madrugada e churrasco; puxa Torcida/Time, pega mal com Pastor e Técnico.",
+      desc: "Resenha, churrasco e madrugadas; sobe Torcida/Time, mas derruba Pastor e Técnico.",
       init: { pastor: 35, torcida: 62, tecnico: 40, time: 60 },
       mod: { torcida: 2, tecnico: -2, pastor: -2 }
     },
     {
       id: "crente",
       label: "Crente",
-      desc: "Culto, disciplina e palavra firme; moral alta com o Pastor, mas cobra na resenha.",
+      desc: "Culto, postura e oração; moral alta com Pastor e Técnico, mas às vezes cobra na resenha.",
       init: { pastor: 75, torcida: 50, tecnico: 55, time: 45 },
       mod: { pastor: 3, time: -1 }
     },
     {
       id: "maria_vai",
       label: "Maria vai com as outras",
-      desc: "Vai na pilha da galera; oscila bastante de acordo com o momento.",
+      desc: "Segue a onda do elenco ou do momento; oscila bastante dependendo da fase.",
       init: { pastor: 50, torcida: 50, tecnico: 50, time: 55 },
       mod: { time: 2, tecnico: -1 }
     }
@@ -639,54 +639,59 @@
   const START_CHOICES = [
     {
       id: "pedreira",
-      label: "Atlético da Pedreira FC",
-      sub: "Base / Varzeano • R$ 650/mês • 12 times",
-      data: { type: "club", name: "Atlético da Pedreira FC", tier: "low", c1: "#dc2626", c2: "#111827", salary: 650, teams: 12, pos: 10 }
+      label: "Atlético da Pedreira (Série D)",
+      sub: "Divisão Inferior • R$ 700/mês • 12 times",
+      data: { type: "club", name: "Atlético da Pedreira FC", tier: "low", c1: "#dc2626", c2: "#111827", salary: 700, teams: 12, pos: 10 }
     },
     {
       id: "brejo",
-      label: "União do Brejo EC",
-      sub: "Base / Interior • R$ 800/mês • 12 times",
-      data: { type: "club", name: "União do Brejo EC", tier: "low", c1: "#16a34a", c2: "#fef08a", salary: 800, teams: 12, pos: 8 }
+      label: "União do Brejo EC (Segundona Estadual)",
+      sub: "Liga Regional • R$ 850/mês • 12 times",
+      data: { type: "club", name: "União do Brejo EC", tier: "low", c1: "#16a34a", c2: "#fef08a", salary: 850, teams: 12, pos: 8 }
     },
     {
       id: "atacadao",
       label: "Atacadão Central (Repositor)",
-      sub: "Sem clube • R$ 1.520/mês • Classificação em branco",
+      sub: "Sem clube no momento • R$ 1.520/mês • Classificação em branco",
       data: { type: "job", name: "Atacadão Central (Repositor)", tier: "job", c1: "#eab308", c2: "#1d4ed8", salary: 1520, teams: null, pos: null }
     },
     {
       id: "verdurao",
       label: "Verdurão do Seu Zé",
-      sub: "Sem clube • R$ 1.250/mês • Classificação em branco",
+      sub: "Sem clube no momento • R$ 1.250/mês • Classificação em branco",
       data: { type: "job", name: "Verdurão do Seu Zé", tier: "job", c1: "#16a34a", c2: "#f97316", salary: 1250, teams: null, pos: null }
     }
   ];
 
-  const CLUBS_LOW_PLUS = [
-    { name: "Estrela do Sertão FC", tier: "low", c1: "#0284c7", c2: "#facc15", salary: 1150, teams: 14 },
-    { name: "Atlético da Pedreira FC", tier: "low", c1: "#dc2626", c2: "#111827", salary: 950, teams: 12 },
-    { name: "União do Brejo EC", tier: "low", c1: "#16a34a", c2: "#fef08a", salary: 1050, teams: 12 }
+  // LIGAS ALTERNATIVAS, 3ª/4ª DIVISÕES E TIMINHOS
+  const CLUBS_LOW_POOL = [
+    { name: "Deportivo El Alto (Bolívia 2ª Div)", tier: "low", c1: "#0284c7", c2: "#facc15", salary: 1100, teams: 14 },
+    { name: "KS Dinamo Tirana B (Albânia)", tier: "low", c1: "#e11d48", c2: "#1e293b", salary: 1300, teams: 10 },
+    { name: "Dhaka Wanderers (Bangladesh)", tier: "low", c1: "#16a34a", c2: "#dc2626", salary: 950, teams: 12 },
+    { name: "Estrela do Sertão FC (Série D)", tier: "low", c1: "#0284c7", c2: "#ffffff", salary: 1200, teams: 16 },
+    { name: "Cangaceiros do Agreste (3ª Estadual)", tier: "low", c1: "#7c2d12", c2: "#fde047", salary: 800, teams: 12 },
+    { name: "Vila Nova do Pajeú (Série D)", tier: "low", c1: "#2563eb", c2: "#ffffff", salary: 1050, teams: 14 }
   ];
 
-  const CLUBS_MID = [
-    { name: "Sertão Forte Esporte", tier: "mid", c1: "#f97316", c2: "#1e293b", salary: 2600, teams: 20 },
-    { name: "Portuguesa do Vale", tier: "mid", c1: "#15803d", c2: "#b91c1c", salary: 3200, teams: 20 },
-    { name: "Nacional do Agreste", tier: "mid", c1: "#2563eb", c2: "#f8fafc", salary: 2900, teams: 20 }
+  const CLUBS_MID_POOL = [
+    { name: "Sertão Forte Esporte (Série C)", tier: "mid", c1: "#f97316", c2: "#1e293b", salary: 2800, teams: 20 },
+    { name: "Portuguesa do Vale (Série B)", tier: "mid", c1: "#15803d", c2: "#b91c1c", salary: 3400, teams: 20 },
+    { name: "Club Deportivo San José (Bolívia A)", tier: "mid", c1: "#1e40af", c2: "#ffffff", salary: 3100, teams: 16 },
+    { name: "KF Skënderbeu (2ª Albânia)", tier: "mid", c1: "#b91c1c", c2: "#ffffff", salary: 3600, teams: 14 }
   ];
 
-  const CLUBS_TOP = [
-    { name: "Esporte Clube Bahia", tier: "top", c1: "#1d4ed8", c2: "#dc2626", salary: 20000, teams: 20 },
-    { name: "CR Flamengo", tier: "top", c1: "#dc2626", c2: "#111827", salary: 28000, teams: 20 }
+  const CLUBS_TOP_POOL = [
+    { name: "Esporte Clube Bahia", tier: "top", c1: "#1d4ed8", c2: "#dc2626", salary: 22000, teams: 20 },
+    { name: "CR Flamengo", tier: "top", c1: "#dc2626", c2: "#111827", salary: 30000, teams: 20 }
   ];
 
-  const JOBS = [
+  const JOBS_POOL = [
     { name: "Atacadão Central (Repositor)", c1: "#eab308", c2: "#1d4ed8", salary: 1520 },
     { name: "Mercadinho Bom Preço", c1: "#22c55e", c2: "#ffffff", salary: 1380 },
     { name: "Verdurão do Seu Zé", c1: "#16a34a", c2: "#f97316", salary: 1250 },
     { name: "Lava-Jato Espuma do Cerrado", c1: "#0ea5e9", c2: "#facc15", salary: 1350 },
     { name: "Funilaria Martelo de Ouro", c1: "#64748b", c2: "#ef4444", salary: 1500 },
-    { name: "Depósito de Materiais Rocha", c1: "#ea580c", c2: "#1e293b", salary: 1480 }
+    { name: "Depósito de Tijolo Rocha", c1: "#ea580c", c2: "#1e293b", salary: 1480 }
   ];
 
   const MONTHS_POOL = [
@@ -695,500 +700,82 @@
     "18 de Outubro", "29 de Novembro"
   ];
 
-  const FOOTBALL_EVENTS = [
+  // BANCO DE EVENTOS DE FUTEBOL (EXCLUSIVOS QUANDO TIVER EM CLUBE)
+  const FOOTBALL_EVENTS_CATALOG = [
+    {
+      tag: "Canela dura",
+      title: "Dominou a bola com a canela no treino",
+      desc: "A bola escapou 3 metros e virou contra-ataque. O preparador físico cobriu o rosto de vergonha.",
+      yesLabel: "Pedir desculpas e jurar que o gramado tá torto",
+      noLabel: "Dar risada e dizer que foi passe de primeira",
+      onYes: () => Math.random() < 0.5
+        ? { ok: true, msg: "Deu certo: o técnico achou engraçado e mandou seguir.", d: { tecnico: 3, time: 2 } }
+        : { ok: false, msg: "Deu errado: pegou mal e o auxiliar anotou sua ruindade na prancheta.", d: { tecnico: -6, ovr: -1 } },
+      onNo: () => Math.random() < 0.5
+        ? { ok: true, msg: "Deu certo: a resenha no vestiário adorou a cara de pau.", d: { time: 6, torcida: 3 } }
+        : { ok: false, msg: "Deu errado: o capitão mandou você calar a boca e treinar.", d: { time: -6, pastor: -4 } }
+    },
     {
       tag: "Vestiário",
-      title: "Discussão por chuteira rasgada no vestiário",
-      desc: "Dois companheiros bateram boca antes do treino porque alguém pegou a chuteira reserva sem avisar.",
-      yesLabel: "Entrar na conversa e fechar com o grupo",
-      noLabel: "Ficar na sua e deixar o técnico resolver",
+      title: "Chuteira furada presa com fita isolante",
+      desc: "Sua única chuteira abriu o bico. O roupeiro disse que só tem uma nº 43 furada do ano passado.",
+      yesLabel: "Enrolar fita isolante preta na ponta e ir pro jogo",
+      noLabel: "Pedir chuteira emprestada pro reserva",
       onYes: () => Math.random() < 0.5
-        ? { ok: true, msg: "Deu certo: a resenha uniu o elenco e você ganhou moral no grupo.", d: { time: 8, tecnico: 3 } }
-        : { ok: false, msg: "Deu errado: a discussão sobrou pra você e o técnico reclamou.", d: { tecnico: -7, time: -4 } },
+        ? { ok: true, msg: "Deu certo: a fita segurou e você deu um chute raiz.", d: { torcida: 7, time: 4 } }
+        : { ok: false, msg: "Deu errado: a sola soltou no meio do pique.", d: { tecnico: -5, torcida: -4 } },
       onNo: () => Math.random() < 0.5
-        ? { ok: true, msg: "Deu certo: passou ileso da confusão e manteve a cabeça limpa.", d: { pastor: 5, tecnico: 4 } }
-        : { ok: false, msg: "Deu errado: acharam que você correu da raia no vestiário.", d: { time: -6, torcida: -4 } }
+        ? { ok: true, msg: "Deu certo: o reserva emprestou uma justa que serviu bem.", d: { time: 5, ovr: 1 } }
+        : { ok: false, msg: "Deu errado: a chuteira ficou apertada e você ganhou 2 bolhas.", d: { tecnico: -4 } }
     },
     {
-      tag: "Patrocínio",
-      title: "Cabeleireira Leila quer estampar o calção",
-      desc: "A Leila oferece corte de cabelo, fazer a unha e um troco por fora se você citar ela na entrevista.",
-      yesLabel: "Aceitar o acordo da Leila",
-      noLabel: "Recusar e manter só o foco no jogo",
+      tag: "Ligas Alternativas",
+      title: "Jogo a 3.800 metros de altitude na Bolívia",
+      desc: "No aquecimento você deu dois piques e a vista escureceu. O balão de oxigênio tá no banco.",
+      yesLabel: "Pedir pra cheirar o oxigênio antes do apito",
+      noLabel: "Fazer corpo mole e correr só quando a bola vier",
       onYes: () => Math.random() < 0.5
-        ? { ok: true, msg: "Deu certo: visual alinhado, unha feita e um dinheiro extra.", d: { torcida: 6, time: 3 } }
-        : { ok: false, msg: "Deu errado: o pessoal zoou o patrocínio na roda do treino.", d: { time: -6, torcida: -4 } },
+        ? { ok: true, msg: "Deu certo: o ar voltou e você aguentou o 1º tempo.", d: { tecnico: 6, pastor: 3 } }
+        : { ok: false, msg: "Deu errado: deu tontura e você errou um lateral sozinho.", d: { torcida: -7, tecnico: -5 } },
       onNo: () => Math.random() < 0.5
-        ? { ok: true, msg: "Deu certo: comissão técnica gostou da seriedade.", d: { tecnico: 5, pastor: 3 } }
-        : { ok: false, msg: "Deu errado: perdeu um agrado que fazia diferença no mês.", d: { torcida: -3 } }
+        ? { ok: true, msg: "Deu certo: economizou fôlego e deu uma casquinha de cabeça.", d: { time: 4 } }
+        : { ok: false, msg: "Deu errado: a torcida local vaiou sua preguiça em espanhol.", d: { torcida: -8 } }
     },
     {
-      tag: "Mercado da Bola",
-      title: "Colega de time foi anunciado no Bahia",
-      desc: "Um companheiro que mal treinava mais que você acertou com o Bahia, enquanto você isolou uma bola na cara do gol.",
-      yesLabel: "Ficar depois do treino batendo falta e finalização",
-      noLabel: "Sair pra esfriar a cabeça com a turma",
+      tag: "Perrengue de Van",
+      title: "Pneu da van furou na BR a 200km do estádio",
+      desc: "O motorista mandou todo mundo descer pra ajudar a empurrar no acostamento sob sol de meio-dia.",
+      yesLabel: "Mandar ver no braço e empurrar a van",
+      noLabel: "Ficar na sombra comendo salgadinho",
       onYes: () => Math.random() < 0.5
-        ? { ok: true, msg: "Deu certo: o treino extra melhorou sua pontaria e seu OVR.", d: { tecnico: 7, ovr: 1 } }
-        : { ok: false, msg: "Deu errado: forçou demais e entrou pesado no dia seguinte.", d: { tecnico: -6, time: -3 } },
+        ? { ok: true, msg: "Deu certo: uniu o grupo no sofrimento antes do jogo.", d: { time: 8, pastor: 3 } }
+        : { ok: false, msg: "Deu errado: queimou as pernas no sol e entrou travado.", d: { tecnico: -5, ovr: -1 } },
       onNo: () => Math.random() < 0.5
-        ? { ok: true, msg: "Deu certo: tirou o peso das costas e voltou mais solto.", d: { time: 7, torcida: 3 } }
-        : { ok: false, msg: "Deu errado: a noite vazou e pegou mal na cobrança.", d: { pastor: -7, tecnico: -6 } }
+        ? { ok: true, msg: "Deu certo: guardou energia pra partida.", d: { time: 2 } }
+        : { ok: false, msg: "Deu errado: o elenco tirou foto sua moscando e postou no grupo.", d: { time: -8, pastor: -4 } }
     },
     {
-      tag: "Patrocínio",
-      title: "Loja de capinha de celular e verdurão",
-      desc: "O dono do verdurão e uma lojinha de capinhas querem mandar material grátis em troca de foto.",
-      yesLabel: "Fechar a divulgação com os dois",
-      noLabel: "Dispensar por enquanto",
+      tag: "Humor Perna de Pau",
+      title: "Cruzamento saiu direto pela linha lateral",
+      desc: "Você tentou cruzar de trivela e a bola mandou uma curva esquisita direto pra fora do estádio.",
+      yesLabel: "Levantar o dedo e culpar o vento",
+      noLabel: "Baixar a cabeça e voltar correndo pra marcar",
       onYes: () => Math.random() < 0.5
-        ? { ok: true, msg: "Deu certo: a galera do bairro comprou a ideia e deu moral.", d: { torcida: 7, time: 2 } }
-        : { ok: false, msg: "Deu errado: a capinha quebrou na hora da foto e virou piada.", d: { torcida: -5, time: -4 } },
+        ? { ok: true, msg: "Deu certo: o vento tava forte mesmo e a galera aceitou.", d: { torcida: 3 } }
+        : { ok: false, msg: "Deu errado: a torcida ruiu de rir e chamou você de caneludo.", d: { torcida: -8, tecnico: -4 } },
       onNo: () => Math.random() < 0.5
-        ? { ok: true, msg: "Deu certo: evitou dor de cabeça com cobrança de postagem.", d: { tecnico: 4 } }
-        : { ok: false, msg: "Deu errado: o pessoal do bairro ficou sentido.", d: { torcida: -5 } }
+        ? { ok: true, msg: "Deu certo: a recompensa veio no suor de recomposição.", d: { tecnico: 6, time: 5 } }
+        : { ok: false, msg: "Deu errado: o técnico balançou a cabeça de desgosto na beira do campo.", d: { tecnico: -6 } }
     },
     {
-      tag: "Escolha",
-      title: "Convite de casa de aposta e bebida na véspera",
-      desc: "Apareceu uma proposta de divulgar casa de aposta e bebida numa resenha antes da partida.",
-      yesLabel: "Aceitar o cachê fácil",
-      noLabel: "Recusar o convite",
+      tag: "Resenha",
+      title: "Churrasco com patrocinador de borracharia",
+      desc: "O dono da borracharia patrocinadora levou 5kg de linguiça no treino de sexta-feira.",
+      yesLabel: "Mandar ver no pão com linguiça e guaraná",
+      noLabel: "Comer só uma salada e ir pro banho",
       onYes: () => Math.random() < 0.5
-        ? { ok: true, msg: "Deu certo: entrou uma grana rápida e a turma curtiu.", d: { time: 5, pastor: -6 } }
-        : { ok: false, msg: "Deu errado: pegou péssimo no grupo, na igreja e com o técnico.", d: { pastor: -10, tecnico: -8, torcida: -5 } },
+        ? { ok: true, msg: "Deu certo: moral alta com o patrocinador local.", d: { torcida: 7, time: 6, pastor: -3 } }
+        : { ok: false, msg: "Deu errado: pesou o estômago no sábado de manhã.", d: { tecnico: -7, ovr: -1 } },
       onNo: () => Math.random() < 0.5
-        ? { ok: true, msg: "Deu certo: manteve a postura e ganhou respeito.", d: { pastor: 8, tecnico: 5 } }
-        : { ok: false, msg: "Deu errado: deixou dinheiro na mesa e ficou pensativo.", d: { time: -3 } }
-    },
-    {
-      tag: "Campo",
-      title: "Chuva forte e gramado pesado na rodada",
-      desc: "O campo virou lamaçal e o técnico pediu ligação direta sem invenção.",
-      yesLabel: "Obedecer e jogar simples na trombada",
-      noLabel: "Tentar driblar curto no meio da lama",
-      onYes: () => Math.random() < 0.5
-        ? { ok: true, msg: "Deu certo: jogo feio, mas você não entregou a bola.", d: { tecnico: 6, time: 4 } }
-        : { ok: false, msg: "Deu errado: escorregou feio e a torcida cornetou.", d: { torcida: -6, time: -3 } },
-      onNo: () => Math.random() < 0.5
-        ? { ok: true, msg: "Deu certo: saiu de um aperto na lama e levantou a galera.", d: { torcida: 8, ovr: 1 } }
-        : { ok: false, msg: "Deu errado: atolou a chuteira e deu contra-ataque pro rival.", d: { tecnico: -8, torcida: -6 } }
-    }
-  ];
-
-  const WORK_EVENTS = [
-    {
-      tag: "Firma",
-      title: "Descarregando caixa no depósito / atacadão",
-      desc: "O caminhão chegou cedo e o suor escorre enquanto passa reprise de jogo no rádio.",
-      yesLabel: "Segurar o ritmo e bater a meta do dia",
-      noLabel: "Pedir pra ir pra outro setor",
-      onYes: () => Math.random() < 0.5
-        ? { ok: true, msg: "Deu certo: cumpriu tudo, mas a vontade de voltar pra bola cresceu.", d: { pastor: 4, vontadeFutebol: 18 } }
-        : { ok: false, msg: "Deu errado: terminou acabado, com mais sede de futebol.", d: { time: -4, vontadeFutebol: 22 } },
-      onNo: () => Math.random() < 0.5
-        ? { ok: true, msg: "Deu certo: conseguiu um serviço mais leve no turno.", d: { tecnico: 3, vontadeFutebol: 14 } }
-        : { ok: false, msg: "Deu errado: gerou atrito com quem manda no setor.", d: { torcida: -4, vontadeFutebol: 16 } }
-    },
-    {
-      tag: "Peneira",
-      title: "Teste no campão no mesmo dia da hora extra",
-      desc: "Um conhecido chamou pra mostrar serviço num time pequeno, mas o chefe pediu hora extra.",
-      yesLabel: "Ir pro teste mostrar serviço na bola",
-      noLabel: "Garantir a hora extra do pagamento",
-      onYes: () => Math.random() < 0.5
-        ? { ok: true, msg: "Deu certo: correu até o fim e chamou atenção.", d: { torcida: 6, ovr: 1, vontadeFutebol: 24 } }
-        : { ok: false, msg: "Deu errado: faltou fôlego no fim e você saiu frustrado.", d: { tecnico: -4, vontadeFutebol: 18 } },
-      onNo: () => Math.random() < 0.5
-        ? { ok: true, msg: "Deu certo: dinheiro extra ajudou a fechar as contas.", d: { pastor: 5, vontadeFutebol: 12 } }
-        : { ok: false, msg: "Deu errado: ver a bola rolando de longe apertou a vontade de voltar.", d: { time: -3, vontadeFutebol: 26 } }
-    },
-    {
-      tag: "Mercadinho",
-      title: "Cliente apressado na fila do caixa / balcão",
-      desc: "A fila encheu e alguém começou a reclamar alto enquanto você pensava no último rachão.",
-      yesLabel: "Manter a calma e atender na paz",
-      noLabel: "Responder seco na mesma hora",
-      onYes: () => Math.random() < 0.5
-        ? { ok: true, msg: "Deu certo: segurou a onda sem perder a cabeça.", d: { pastor: 6, vontadeFutebol: 16 } }
-        : { ok: false, msg: "Deu errado: engoliu seco e cresceu a vontade de jogar.", d: { torcida: -3, vontadeFutebol: 22 } },
-      onNo: () => Math.random() < 0.5
-        ? { ok: true, msg: "Deu certo: ninguém montou em cima e o dia acabou.", d: { time: 4, vontadeFutebol: 15 } }
-        : { ok: false, msg: "Deu errado: clima pesado no trampo e saudade do campo.", d: { pastor: -6, vontadeFutebol: 26 } }
-    },
-    {
-      tag: "Rotina",
-      title: "Chuva na hora de ir pro ponto ou pro trabalho",
-      desc: "Molhou o tênis e o caminho tá escorregadio logo cedo.",
-      yesLabel: "Sair no horário mesmo molhado",
-      noLabel: "Esperar a chuva diminuir um pouco",
-      onYes: () => Math.random() < 0.5
-        ? { ok: true, msg: "Deu certo: chegou pontual e mostrou compromisso.", d: { pastor: 5, vontadeFutebol: 15 } }
-        : { ok: false, msg: "Deu errado: pegou chuva gelada e ficou sonhando com o vestiário.", d: { time: -4, vontadeFutebol: 20 } },
-      onNo: () => Math.random() < 0.5
-        ? { ok: true, msg: "Deu certo: a chuva passou rápido e não deu atraso.", d: { torcida: 3, vontadeFutebol: 14 } }
-        : { ok: false, msg: "Deu errado: atrasou um pouco e ouviu cobrança.", d: { tecnico: -5, vontadeFutebol: 18 } }
-    }
-  ];
-
-  const state = {
-    name: "Bagre da Vila",
-    age: 16,
-    style: STYLES[0],
-    ovr: 31,
-    season: 1,
-    step: 0,
-    eventsPerSeason: 4,
-    moral: { pastor: 50, torcida: 50, tecnico: 50, time: 50 },
-    contract: null,
-    playedMidTier: false,
-    vontadeFutebol: 50,
-    usedEventKeys: new Set(),
-    currentEvent: null,
-    currentMarketOffer: null,
-    resolved: false,
-    lastOutcome: null,
-    phase: "event"
-  };
-
-  let selectedStyleId = STYLES[0].id;
-  let selectedStartId = START_CHOICES[0].id;
-
-  function clamp(n, min = 0, max = 100) {
-    return Math.max(min, Math.min(max, n));
-  }
-
-  function applyDelta(d = {}) {
-    const mod = state.style ? state.style.mod : {};
-    if (typeof d.pastor === "number") state.moral.pastor = clamp(state.moral.pastor + d.pastor + (mod.pastor || 0));
-    if (typeof d.torcida === "number") state.moral.torcida = clamp(state.moral.torcida + d.torcida + (mod.torcida || 0));
-    if (typeof d.tecnico === "number") state.moral.tecnico = clamp(state.moral.tecnico + d.tecnico + (mod.tecnico || 0));
-    if (typeof d.time === "number") state.moral.time = clamp(state.moral.time + d.time + (mod.time || 0));
-    if (typeof d.ovr === "number") state.ovr = clamp(state.ovr + d.ovr, 25, 88);
-    if (typeof d.vontadeFutebol === "number") state.vontadeFutebol = clamp(state.vontadeFutebol + d.vontadeFutebol);
-  }
-
-  function showScreen(id) {
-    document.querySelectorAll(".screen").forEach((el) => el.classList.remove("active"));
-    document.getElementById(id).classList.add("active");
-  }
-
-  function renderSetupOptions() {
-    const styleBox = document.getElementById("styleOptions");
-    styleBox.innerHTML = "";
-    STYLES.forEach((st) => {
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "option-btn" + (st.id === selectedStyleId ? " selected" : "");
-      btn.innerHTML = `
-        <div>
-          <div class="opt-main">${st.label}</div>
-          <div class="opt-sub">${st.desc}</div>
-        </div>
-      `;
-      btn.onclick = () => {
-        selectedStyleId = st.id;
-        renderSetupOptions();
-      };
-      styleBox.appendChild(btn);
-    });
-
-    const startBox = document.getElementById("startOptions");
-    startBox.innerHTML = "";
-    START_CHOICES.forEach((op) => {
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "option-btn" + (op.id === selectedStartId ? " selected" : "");
-      btn.innerHTML = `
-        <div>
-          <div class="opt-main">
-            <span class="color-dots">
-              <span class="dot" style="background:${op.data.c1}"></span>
-              <span class="dot" style="background:${op.data.c2}"></span>
-            </span>
-            <span>${op.label}</span>
-          </div>
-          <div class="opt-sub">${op.sub}</div>
-        </div>
-      `;
-      btn.onclick = () => {
-        selectedStartId = op.id;
-        renderSetupOptions();
-      };
-      startBox.appendChild(btn);
-    });
-  }
-
-  function pickUniqueEvent(pool, prefix) {
-    let available = pool
-      .map((ev, idx) => ({ ev, key: `${prefix}_${idx}` }))
-      .filter((item) => !state.usedEventKeys.has(item.key));
-
-    if (available.length === 0) {
-      pool.forEach((_, idx) => state.usedEventKeys.delete(`${prefix}_${idx}`));
-      available = pool.map((ev, idx) => ({ ev, key: `${prefix}_${idx}` }));
-    }
-
-    const chosen = available[Math.floor(Math.random() * available.length)];
-    state.usedEventKeys.add(chosen.key);
-
-    const dateLabel = MONTHS_POOL[(state.step * 2 + Math.floor(Math.random() * 2)) % MONTHS_POOL.length];
-    return { ...chosen.ev, date: dateLabel };
-  }
-
-  function pickEventForStep() {
-    const isClub = state.contract && state.contract.type === "club";
-    state.currentEvent = isClub
-      ? pickUniqueEvent(FOOTBALL_EVENTS, "fb")
-      : pickUniqueEvent(WORK_EVENTS, "wk");
-    state.resolved = false;
-    state.lastOutcome = null;
-    state.phase = "event";
-
-    if (isClub && state.contract.teams) {
-      const shift = Math.floor(Math.random() * 5) - 2;
-      state.contract.pos = clamp(state.contract.pos + shift, 1, state.contract.teams);
-    }
-  }
-
-  function generateMarketOffer() {
-    const isJob = !state.contract || state.contract.type === "job";
-
-    if (state.playedMidTier && Math.random() < 0.01) {
-      const top = CLUBS_TOP[Math.floor(Math.random() * CLUBS_TOP.length)];
-      return {
-        date: "Fim de Temporada",
-        tag: "Elite • 1/100",
-        title: `Sondagem inesperada do ${top.name}`,
-        desc: `Depois de rodar no segundo escalão, surgiu uma chance raríssima. Salário: R$ ${top.salary.toLocaleString("pt-BR")}/mês.`,
-        target: {
-          type: "club", name: top.name, tier: "top", c1: top.c1, c2: top.c2,
-          salary: top.salary, teams: top.teams, pos: Math.floor(Math.random() * 12) + 6
-        }
-      };
-    }
-
-    if (isJob && state.vontadeFutebol >= 50) {
-      const useMid = state.ovr >= 37 && state.age >= 18 && Math.random() < 0.25;
-      const list = useMid ? CLUBS_MID : CLUBS_LOW_PLUS;
-      const c = list[Math.floor(Math.random() * list.length)];
-      return {
-        date: "Fim de Temporada",
-        tag: useMid ? "2º Escalão" : "Retorno à Bola",
-        title: `Convite do ${c.name}`,
-        desc: `A vontade de voltar a jogar falou mais alto. Salário: R$ ${c.salary.toLocaleString("pt-BR")}/mês.`,
-        target: { ...c, pos: Math.floor(Math.random() * (c.teams - 2)) + 2 }
-      };
-    }
-
-    if (!isJob && state.contract.tier === "low" && (state.ovr >= 35 || state.moral.tecnico >= 62) && Math.random() < 0.25) {
-      const mid = CLUBS_MID[Math.floor(Math.random() * CLUBS_MID.length)];
-      return {
-        date: "Fim de Temporada",
-        tag: "2º Escalão",
-        title: `Proposta do ${mid.name}`,
-        desc: `Seu desempenho chamou atenção de um clube mais estruturado. Salário: R$ ${mid.salary.toLocaleString("pt-BR")}/mês.`,
-        target: {
-          type: "club", name: mid.name, tier: "mid", c1: mid.c1, c2: mid.c2,
-          salary: mid.salary, teams: mid.teams, pos: Math.floor(Math.random() * 12) + 6
-        }
-      };
-    }
-
-    if (!isJob) {
-      const roll = Math.random();
-      if (roll < 0.55) {
-        return {
-          date: "Fim de Temporada",
-          tag: "Contrato",
-          title: `Renovação com ${state.contract.name}`,
-          desc: `Clube topa manter você por mais um ano pagando R$ ${state.contract.salary.toLocaleString("pt-BR")}/mês.`,
-          target: { ...state.contract }
-        };
-      }
-      const otherClub = CLUBS_LOW_PLUS[Math.floor(Math.random() * CLUBS_LOW_PLUS.length)];
-      return {
-        date: "Fim de Temporada",
-        tag: "Troca de Time",
-        title: `Proposta do ${otherClub.name}`,
-        desc: `Surge oportunidade de mudar de ares recebendo R$ ${otherClub.salary.toLocaleString("pt-BR")}/mês.`,
-        target: { ...otherClub, pos: Math.floor(Math.random() * (otherClub.teams - 2)) + 2 }
-      };
-    }
-
-    const j = JOBS[Math.floor(Math.random() * JOBS.length)];
-    return {
-      date: "Fim de Temporada",
-      tag: "Emprego",
-      title: `Vaga no ${j.name}`,
-      desc: `Sem proposta fechada na bola agora, aparece vaga certa pagando R$ ${j.salary.toLocaleString("pt-BR")}/mês.`,
-      target: {
-        type: "job", name: j.name, tier: "job", c1: j.c1, c2: j.c2,
-        salary: j.salary, teams: null, pos: null
-      }
-    };
-  }
-
-  function renderGame() {
-    document.getElementById("playerName").textContent = state.name;
-    document.getElementById("playerMeta").textContent = `${state.age} anos • ${state.style.label}`;
-    document.getElementById("ovrBadge").textContent = `OVR ${state.ovr}`;
-
-    document.getElementById("mPastor").textContent = state.moral.pastor;
-    document.getElementById("mTorcida").textContent = state.moral.torcida;
-    document.getElementById("mTecnico").textContent = state.moral.tecnico;
-    document.getElementById("mTime").textContent = state.moral.time;
-
-    const c = state.contract;
-    document.getElementById("dot1").style.background = c.c1;
-    document.getElementById("dot2").style.background = c.c2;
-    document.getElementById("clubTitle").textContent = c.name;
-    document.getElementById("standingInfo").textContent =
-      c.type === "club" && c.pos ? `${c.pos}º / ${c.teams} times` : "-";
-
-    document.getElementById("seasonInfo").textContent =
-      state.phase === "event"
-        ? `Temporada ${state.season} • ${state.step + 1}/${state.eventsPerSeason}`
-        : `Temporada ${state.season} • Encerramento`;
-
-    const card = document.getElementById("eventCard");
-    const btnNext = document.getElementById("btnNext");
-    const item = state.phase === "event" ? state.currentEvent : state.currentMarketOffer;
-
-    let outcomeHtml = "";
-    if (state.resolved && state.lastOutcome) {
-      outcomeHtml = `<div class="outcome-box ${state.lastOutcome.ok ? "" : "fail"}">${state.lastOutcome.msg}</div>`;
-    }
-
-    if (state.phase === "event") {
-      card.innerHTML = `
-        <div class="event-header">
-          <span>${item.date}</span>
-          <span class="tag">${item.tag}</span>
-        </div>
-        <h2 class="event-title">${item.title}</h2>
-        <p class="event-desc">${item.desc}</p>
-        ${!state.resolved ? `
-          <div class="choices">
-            <button class="btn-choice yes" id="btnYes">${item.yesLabel}</button>
-            <button class="btn-choice no" id="btnNo">${item.noLabel}</button>
-          </div>
-        ` : outcomeHtml}
-      `;
-
-      btnNext.disabled = !state.resolved;
-
-      if (!state.resolved) {
-        document.getElementById("btnYes").onclick = () => {
-          const res = item.onYes();
-          applyDelta(res.d);
-          state.lastOutcome = res;
-          state.resolved = true;
-          renderGame();
-        };
-        document.getElementById("btnNo").onclick = () => {
-          const res = item.onNo();
-          applyDelta(res.d);
-          state.lastOutcome = res;
-          state.resolved = true;
-          renderGame();
-        };
-      }
-    } else {
-      card.innerHTML = `
-        <div class="event-header">
-          <span>${item.date}</span>
-          <span class="tag">${item.tag}</span>
-        </div>
-        <h2 class="event-title">${item.title}</h2>
-        <p class="event-desc">${item.desc}</p>
-        ${!state.resolved ? `
-          <div class="choices">
-            <button class="btn-choice yes" id="btnAccept">Aceitar</button>
-            <button class="btn-choice no" id="btnDecline">Recusar</button>
-          </div>
-        ` : outcomeHtml}
-      `;
-
-      btnNext.disabled = !state.resolved;
-
-      if (!state.resolved) {
-        document.getElementById("btnAccept").onclick = () => {
-          state.contract = { ...item.target };
-          if (state.contract.tier === "mid") state.playedMidTier = true;
-          if (state.contract.type === "club") state.vontadeFutebol = 20;
-          state.lastOutcome = {
-            ok: true,
-            msg: `Fechado: novo destino em ${state.contract.name} (R$ ${state.contract.salary.toLocaleString("pt-BR")}/mês).`
-          };
-          state.resolved = true;
-          renderGame();
-        };
-        document.getElementById("btnDecline").onclick = () => {
-          if (item.target.type === "job") {
-            state.vontadeFutebol = clamp(state.vontadeFutebol + 12);
-          }
-          state.lastOutcome = {
-            ok: false,
-            msg: "Recusado: você decidiu esperar os próximos passos."
-          };
-          state.resolved = true;
-          renderGame();
-        };
-      }
-    }
-  }
-
-  function advance() {
-    if (!state.resolved) return;
-    if (state.phase === "event") {
-      state.step += 1;
-      if (state.step < state.eventsPerSeason) {
-        pickEventForStep();
-      } else {
-        state.phase = "market";
-        state.resolved = false;
-        state.lastOutcome = null;
-        state.currentMarketOffer = generateMarketOffer();
-      }
-      renderGame();
-    } else {
-      state.season += 1;
-      state.age += 1;
-      state.step = 0;
-      pickEventForStep();
-      renderGame();
-    }
-  }
-
-  document.getElementById("btnGoSetup").addEventListener("click", () => {
-    renderSetupOptions();
-    showScreen("setupScreen");
-  });
-
-  document.getElementById("btnStartCareer").addEventListener("click", () => {
-    const rawName = document.getElementById("inputName").value.trim();
-    const chosenStyle = STYLES.find((s) => s.id === selectedStyleId) || STYLES[0];
-    const chosenStart = START_CHOICES.find((o) => o.id === selectedStartId) || START_CHOICES[0];
-
-    state.name = rawName || "Bagre da Vila";
-    state.age = 16;
-    state.style = chosenStyle;
-    state.moral = { ...chosenStyle.init };
-    state.contract = { ...chosenStart.data };
-    state.season = 1;
-    state.step = 0;
-    state.ovr = 31;
-    state.playedMidTier = false;
-    state.vontadeFutebol = chosenStart.data.type === "job" ? 55 : 25;
-    state.usedEventKeys.clear();
-
-    pickEventForStep();
-    showScreen("gameScreen");
-    renderGame();
-  });
-
-  document.getElementById("btnNext").addEventListener("click", advance);
-</script>
-</body>
-</html>
+        ? { ok: true, msg: "Deu certo: disciplina profissional mantida.", d: { tecnico: 6, pastor: 5 } }
+        : { ok: false, msg: "Deu errado: chamaram você de mascarado que não come com o povo.", d:
