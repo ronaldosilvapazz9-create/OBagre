@@ -58,7 +58,6 @@
     display: flex;
   }
 
-  /* TELA INICIAL */
   .start-screen {
     justify-content: space-between;
     align-items: center;
@@ -126,7 +125,6 @@
     opacity: 0.85;
   }
 
-  /* TELA DE CRIAÇÃO */
   .setup-screen {
     gap: 10px;
     padding-top: 6px;
@@ -240,7 +238,6 @@
     min-height: 50px;
   }
 
-  /* TELA PRINCIPAL DO JOGO */
   .game-screen {
     gap: 8px;
     justify-content: space-between;
@@ -503,7 +500,6 @@
 </head>
 <body>
 <div class="app-shell">
-  <!-- 1. TELA INICIAL -->
   <section class="screen start-screen active" id="startScreen">
     <div class="logo-box">
       <svg width="98" height="98" viewBox="0 0 96 96" fill="none" aria-label="Logo O Bagre">
@@ -517,7 +513,7 @@
       <p class="subtitle">Dos 16 anos tentando virar jogador sem estourar o joelho nem a paciência.</p>
     </div>
 
-    <button class="btn-play" id="btnGoSetup">
+    <button class="btn-play" id="btnGoSetup" type="button">
       <span class="ball-dot"></span>
       <span>JOGAR</span>
     </button>
@@ -525,7 +521,6 @@
     <div class="credit">desenvolvido por Ronaldo Paz</div>
   </section>
 
-  <!-- 2. TELA DE ESCOLHA -->
   <section class="screen setup-screen" id="setupScreen">
     <div class="setup-header">
       <h2>Montar Bagre (16 anos)</h2>
@@ -549,10 +544,9 @@
       </div>
     </div>
 
-    <button class="btn-confirm" id="btnStartCareer">Começar aos 16 anos</button>
+    <button class="btn-confirm" id="btnStartCareer" type="button">Começar aos 16 anos</button>
   </section>
 
-  <!-- 3. TELA DO JOGO -->
   <main class="screen game-screen" id="gameScreen">
     <div class="top-player">
       <div class="player-left">
@@ -606,12 +600,13 @@
 
     <div class="bottom-nav">
       <span class="season-info" id="seasonInfo">Temporada 1 • 1/4</span>
-      <button class="btn-arrow" id="btnNext" title="Avançar" aria-label="Avançar">➔</button>
+      <button class="btn-arrow" id="btnNext" title="Avançar" aria-label="Avançar" type="button">➔</button>
     </div>
   </main>
 </div>
 
 <script>
+(function () {
   const STYLES = [
     {
       id: "farrista",
@@ -639,14 +634,14 @@
   const START_CHOICES = [
     {
       id: "pedreira",
-      label: "Atlético da Pedreira (Série D)",
-      sub: "Divisão Inferior • R$ 700/mês • 12 times",
+      label: "Atlético da Pedreira (4ª Divisão)",
+      sub: "Timão de várzea/acesso • R$ 700/mês • 12 times",
       data: { type: "club", name: "Atlético da Pedreira FC", tier: "low", c1: "#dc2626", c2: "#111827", salary: 700, teams: 12, pos: 10 }
     },
     {
       id: "brejo",
-      label: "União do Brejo EC (Segundona Estadual)",
-      sub: "Liga Regional • R$ 850/mês • 12 times",
+      label: "União do Brejo EC (3ª Divisão)",
+      sub: "Divisão inferior • R$ 850/mês • 12 times",
       data: { type: "club", name: "União do Brejo EC", tier: "low", c1: "#16a34a", c2: "#fef08a", salary: 850, teams: 12, pos: 8 }
     },
     {
@@ -663,14 +658,15 @@
     }
   ];
 
-  // LIGAS ALTERNATIVAS, 3ª/4ª DIVISÕES E TIMINHOS
   const CLUBS_LOW_POOL = [
     { name: "Deportivo El Alto (Bolívia 2ª Div)", tier: "low", c1: "#0284c7", c2: "#facc15", salary: 1100, teams: 14 },
     { name: "KS Dinamo Tirana B (Albânia)", tier: "low", c1: "#e11d48", c2: "#1e293b", salary: 1300, teams: 10 },
     { name: "Dhaka Wanderers (Bangladesh)", tier: "low", c1: "#16a34a", c2: "#dc2626", salary: 950, teams: 12 },
     { name: "Estrela do Sertão FC (Série D)", tier: "low", c1: "#0284c7", c2: "#ffffff", salary: 1200, teams: 16 },
-    { name: "Cangaceiros do Agreste (3ª Estadual)", tier: "low", c1: "#7c2d12", c2: "#fde047", salary: 800, teams: 12 },
-    { name: "Vila Nova do Pajeú (Série D)", tier: "low", c1: "#2563eb", c2: "#ffffff", salary: 1050, teams: 14 }
+    { name: "Cangaceiros do Agreste (3ª Div)", tier: "low", c1: "#7c2d12", c2: "#fde047", salary: 800, teams: 12 },
+    { name: "Vila Nova do Pajeú (4ª Div)", tier: "low", c1: "#2563eb", c2: "#ffffff", salary: 1050, teams: 14 },
+    { name: "FC Santa Coloma II (Andorra)", tier: "low", c1: "#dc2626", c2: "#facc15", salary: 1150, teams: 10 },
+    { name: "Rangers de Talca B (Chile B)", tier: "low", c1: "#1e3a8a", c2: "#dc2626", salary: 1250, teams: 16 }
   ];
 
   const CLUBS_MID_POOL = [
@@ -700,82 +696,118 @@
     "18 de Outubro", "29 de Novembro"
   ];
 
-  // BANCO DE EVENTOS DE FUTEBOL (EXCLUSIVOS QUANDO TIVER EM CLUBE)
-  const FOOTBALL_EVENTS_CATALOG = [
+  const BASE_FOOTBALL_SCENARIOS = [
     {
       tag: "Canela dura",
       title: "Dominou a bola com a canela no treino",
-      desc: "A bola escapou 3 metros e virou contra-ataque. O preparador físico cobriu o rosto de vergonha.",
-      yesLabel: "Pedir desculpas e jurar que o gramado tá torto",
-      noLabel: "Dar risada e dizer que foi passe de primeira",
+      desc: "A bola espirrou 3 metros e virou contra-ataque. O preparador físico colocou a mão na cabeça.",
+      yesLabel: "Culpar o gramado irregular e pedir repeteco",
+      noLabel: "Dizer que foi passe de calcanhar calculado",
       onYes: () => Math.random() < 0.5
-        ? { ok: true, msg: "Deu certo: o técnico achou engraçado e mandou seguir.", d: { tecnico: 3, time: 2 } }
-        : { ok: false, msg: "Deu errado: pegou mal e o auxiliar anotou sua ruindade na prancheta.", d: { tecnico: -6, ovr: -1 } },
+        ? { ok: true, msg: "Deu certo: o gramado tava mesmo cheio de buraco e o técnico relevou.", d: { tecnico: 3, time: 2 } }
+        : { ok: false, msg: "Deu errado: o auxiliar anotou na prancheta que o domínio não sai.", d: { tecnico: -6, ovr: -1 } },
       onNo: () => Math.random() < 0.5
-        ? { ok: true, msg: "Deu certo: a resenha no vestiário adorou a cara de pau.", d: { time: 6, torcida: 3 } }
-        : { ok: false, msg: "Deu errado: o capitão mandou você calar a boca e treinar.", d: { time: -6, pastor: -4 } }
+        ? { ok: true, msg: "Deu certo: o vestiário caiu na risada com a cara de pau.", d: { time: 6, torcida: 3 } }
+        : { ok: false, msg: "Deu errado: o capitão mandou parar de gracinha e correr.", d: { time: -6, pastor: -4 } }
     },
     {
       tag: "Vestiário",
       title: "Chuteira furada presa com fita isolante",
-      desc: "Sua única chuteira abriu o bico. O roupeiro disse que só tem uma nº 43 furada do ano passado.",
-      yesLabel: "Enrolar fita isolante preta na ponta e ir pro jogo",
-      noLabel: "Pedir chuteira emprestada pro reserva",
+      desc: "A sola abriu no meio da semana e o roupeiro só tem chuteira velha sobrando.",
+      yesLabel: "Passar duas voltas de fita isolante e ir pro jogo",
+      noLabel: "Pegar emprestado um par apertado do reserva",
       onYes: () => Math.random() < 0.5
-        ? { ok: true, msg: "Deu certo: a fita segurou e você deu um chute raiz.", d: { torcida: 7, time: 4 } }
-        : { ok: false, msg: "Deu errado: a sola soltou no meio do pique.", d: { tecnico: -5, torcida: -4 } },
+        ? { ok: true, msg: "Deu certo: a fita aguentou firme até o apito final.", d: { torcida: 7, time: 4 } }
+        : { ok: false, msg: "Deu errado: a sola descolou no primeiro pique longo.", d: { tecnico: -5, torcida: -4 } },
       onNo: () => Math.random() < 0.5
-        ? { ok: true, msg: "Deu certo: o reserva emprestou uma justa que serviu bem.", d: { time: 5, ovr: 1 } }
-        : { ok: false, msg: "Deu errado: a chuteira ficou apertada e você ganhou 2 bolhas.", d: { tecnico: -4 } }
+        ? { ok: true, msg: "Deu certo: a chuteira encaixou bem e você arriscou um chute.", d: { time: 5, ovr: 1 } }
+        : { ok: false, msg: "Deu errado: apertou os dedos e você saiu mancando.", d: { tecnico: -4 } }
     },
     {
       tag: "Ligas Alternativas",
-      title: "Jogo a 3.800 metros de altitude na Bolívia",
-      desc: "No aquecimento você deu dois piques e a vista escureceu. O balão de oxigênio tá no banco.",
-      yesLabel: "Pedir pra cheirar o oxigênio antes do apito",
-      noLabel: "Fazer corpo mole e correr só quando a bola vier",
+      title: "Partida na altitude e clima hostil",
+      desc: "No aquecimento já faltou ar e a torcida local faz pressão desde o hino.",
+      yesLabel: "Puxar oxigênio e segurar o ritmo no começo",
+      noLabel: "Dosar o gás e jogar simples sem se afobar",
       onYes: () => Math.random() < 0.5
-        ? { ok: true, msg: "Deu certo: o ar voltou e você aguentou o 1º tempo.", d: { tecnico: 6, pastor: 3 } }
-        : { ok: false, msg: "Deu errado: deu tontura e você errou um lateral sozinho.", d: { torcida: -7, tecnico: -5 } },
+        ? { ok: true, msg: "Deu certo: recuperou o fôlego e aguentou bem a pressão.", d: { tecnico: 6, pastor: 3 } }
+        : { ok: false, msg: "Deu errado: deu tontura e você errou um passe curto.", d: { torcida: -7, tecnico: -5 } },
       onNo: () => Math.random() < 0.5
-        ? { ok: true, msg: "Deu certo: economizou fôlego e deu uma casquinha de cabeça.", d: { time: 4 } }
-        : { ok: false, msg: "Deu errado: a torcida local vaiou sua preguiça em espanhol.", d: { torcida: -8 } }
+        ? { ok: true, msg: "Deu certo: jogou com inteligência dentro das limitações.", d: { time: 5, tecnico: 3 } }
+        : { ok: false, msg: "Deu errado: acharam que você tava correndo pouco.", d: { torcida: -7 } }
     },
     {
-      tag: "Perrengue de Van",
-      title: "Pneu da van furou na BR a 200km do estádio",
-      desc: "O motorista mandou todo mundo descer pra ajudar a empurrar no acostamento sob sol de meio-dia.",
-      yesLabel: "Mandar ver no braço e empurrar a van",
-      noLabel: "Ficar na sombra comendo salgadinho",
+      tag: "Perrengue de Viagem",
+      title: "Van encostou no acostamento antes da rodada",
+      desc: "O calor aperta na estrada e o elenco precisa decidir como lidar com o atraso.",
+      yesLabel: "Ajudar no que der pra destravar a viagem",
+      noLabel: "Ficar na sombra descansando as pernas",
       onYes: () => Math.random() < 0.5
-        ? { ok: true, msg: "Deu certo: uniu o grupo no sofrimento antes do jogo.", d: { time: 8, pastor: 3 } }
-        : { ok: false, msg: "Deu errado: queimou as pernas no sol e entrou travado.", d: { tecnico: -5, ovr: -1 } },
+        ? { ok: true, msg: "Deu certo: clima de união fortaleceu o grupo antes do jogo.", d: { time: 8, pastor: 3 } }
+        : { ok: false, msg: "Deu errado: cansou no sol forte e entrou pesado.", d: { tecnico: -5, ovr: -1 } },
       onNo: () => Math.random() < 0.5
-        ? { ok: true, msg: "Deu certo: guardou energia pra partida.", d: { time: 2 } }
-        : { ok: false, msg: "Deu errado: o elenco tirou foto sua moscando e postou no grupo.", d: { time: -8, pastor: -4 } }
+        ? { ok: true, msg: "Deu certo: pernas descansadas ajudaram nos minutos finais.", d: { time: 3 } }
+        : { ok: false, msg: "Deu errado: saiu foto sua moscando e pegou mal no grupo.", d: { time: -8, pastor: -4 } }
     },
     {
       tag: "Humor Perna de Pau",
-      title: "Cruzamento saiu direto pela linha lateral",
-      desc: "Você tentou cruzar de trivela e a bola mandou uma curva esquisita direto pra fora do estádio.",
-      yesLabel: "Levantar o dedo e culpar o vento",
-      noLabel: "Baixar a cabeça e voltar correndo pra marcar",
+      title: "Finalização isolada que quase acertou o placar",
+      desc: "A bola sobrou limpa na entrada da área e o chute subiu muito além do travessão.",
+      yesLabel: "Levantar o braço e culpar a bola leve",
+      noLabel: "Voltar rápido na marcação sem reclamar",
       onYes: () => Math.random() < 0.5
-        ? { ok: true, msg: "Deu certo: o vento tava forte mesmo e a galera aceitou.", d: { torcida: 3 } }
-        : { ok: false, msg: "Deu errado: a torcida ruiu de rir e chamou você de caneludo.", d: { torcida: -8, tecnico: -4 } },
+        ? { ok: true, msg: "Deu certo: ninguém levou pro lado pessoal e o jogo seguiu.", d: { torcida: 3 } }
+        : { ok: false, msg: "Deu errado: a arquibancada caçoou da sua pontaria.", d: { torcida: -8, tecnico: -4 } },
       onNo: () => Math.random() < 0.5
-        ? { ok: true, msg: "Deu certo: a recompensa veio no suor de recomposição.", d: { tecnico: 6, time: 5 } }
-        : { ok: false, msg: "Deu errado: o técnico balançou a cabeça de desgosto na beira do campo.", d: { tecnico: -6 } }
+        ? { ok: true, msg: "Deu certo: compensou o chute torto com dedicação.", d: { tecnico: 6, time: 5 } }
+        : { ok: false, msg: "Deu errado: o banco lamentou a chance desperdiçada.", d: { tecnico: -6 } }
     },
     {
-      tag: "Resenha",
-      title: "Churrasco com patrocinador de borracharia",
-      desc: "O dono da borracharia patrocinadora levou 5kg de linguiça no treino de sexta-feira.",
-      yesLabel: "Mandar ver no pão com linguiça e guaraná",
-      noLabel: "Comer só uma salada e ir pro banho",
+      tag: "Mercado da Bola",
+      title: "Companheiro de elenco fechou com gigante",
+      desc: "Um colega do grupo acertou com o Bahia após uma sequência boa, enquanto você segue lutando por espaço.",
+      yesLabel: "Pedir conselho sobre empresários e testes",
+      noLabel: "Focar em treino extra de fundamento básico",
       onYes: () => Math.random() < 0.5
-        ? { ok: true, msg: "Deu certo: moral alta com o patrocinador local.", d: { torcida: 7, time: 6, pastor: -3 } }
-        : { ok: false, msg: "Deu errado: pesou o estômago no sábado de manhã.", d: { tecnico: -7, ovr: -1 } },
+        ? { ok: true, msg: "Deu certo: ganhou dicas práticas de bastidor.", d: { pastor: 4, time: 4 } }
+        : { ok: false, msg: "Deu errado: ouviu piada sobre precisar melhorar o domínio.", d: { time: -5 } },
       onNo: () => Math.random() < 0.5
-        ? { ok: true, msg: "Deu certo: disciplina profissional mantida.", d: { tecnico: 6, pastor: 5 } }
-        : { ok: false, msg: "Deu errado: chamaram você de mascarado que não come com o povo.", d:
+        ? { ok: true, msg: "Deu certo: o treino repetitivo evoluiu seu OVR.", d: { tecnico: 7, ovr: 1 } }
+        : { ok: false, msg: "Deu errado: forçou demais e sentiu desconforto muscular.", d: { tecnico: -6 } }
+    },
+    {
+      tag: "Patrocínio Local",
+      title: "Apoio da Cabeleireira Leila e comércio do bairro",
+      desc: "Comércio local oferece corte, estética e um pequeno agrado em troca de divulgação.",
+      yesLabel: "Aceitar o apoio local e fazer a mídia",
+      noLabel: "Recusar e manter foco apenas nos treinos",
+      onYes: () => Math.random() < 0.5
+        ? { ok: true, msg: "Deu certo: visual em dia e moral com a comunidade.", d: { torcida: 7, time: 3 } }
+        : { ok: false, msg: "Deu errado: o corte ficou ousado demais e virou resenha.", d: { time: -6, torcida: -4 } },
+      onNo: () => Math.random() < 0.5
+        ? { ok: true, msg: "Deu certo: comissão enxergou seriedade no seu foco.", d: { tecnico: 5, pastor: 3 } }
+        : { ok: false, msg: "Deu errado: perdeu um agrado simples do dia a dia.", d: { torcida: -3 } }
+    },
+    {
+      tag: "Escolha Moral",
+      title: "Convite de aposta e bebida antes da rodada",
+      desc: "Surgiu proposta fácil para marcar presença em evento com apostas e bebida na véspera.",
+      yesLabel: "Aceitar o dinheiro fácil",
+      noLabel: "Recusar o convite",
+      onYes: () => Math.random() < 0.5
+        ? { ok: true, msg: "Deu certo: entrou uma grana rápida e a turma curtiu.", d: { time: 5, pastor: -6 } }
+        : { ok: false, msg: "Deu errado: repercutiu mal com Pastor, Técnico e elenco.", d: { pastor: -10, tecnico: -8, torcida: -5 } },
+      onNo: () => Math.random() < 0.5
+        ? { ok: true, msg: "Deu certo: manteve o compromisso e ganhou respeito.", d: { pastor: 8, tecnico: 5 } }
+        : { ok: false, msg: "Deu errado: deixou uma grana fácil passar.", d: { time: -3 } }
+    }
+  ];
+
+  const BASE_WORK_SCENARIOS = [
+    {
+      tag: "Firma / Estoque",
+      title: "Carga pesada no estoque no horário do jogo",
+      desc: "Sem clube no momento, o turno exige braço enquanto você ouve comentários da rodada.",
+      yesLabel: "Segurar a bronca e cumprir a meta do turno",
+      noLabel: "Pedir troca para tarefa mais leve",
+      onYes: () =>
