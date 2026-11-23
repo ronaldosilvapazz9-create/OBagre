@@ -1,7 +1,1887 @@
-<!-- ... existing code ... -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b1118" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="O Bagre" />
+  <title>O Bagre</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0b1118;
+      --card: #121b26;
+      --card-2: #172230;
+      --card-3: #1d2b3d;
+      --text: #eef3f8;
+      --muted: #93a6bc;
+      --accent: #22c55e;
+      --accent-hover: #16a34a;
+      --danger: #ef4444;
+      --gold: #f59e0b;
+      --border: rgba(255, 255, 255, 0.09);
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100dvh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      overflow: hidden;
+    }
+
+    .app-shell {
+      width: 100%;
+      height: 100dvh;
+      max-width: 480px;
+      margin: 0 auto;
+      background: radial-gradient(circle at top, #142436 0%, var(--bg) 62%);
+      display: flex;
+      flex-direction: column;
+      padding: env(safe-area-inset-top, 10px) 12px env(safe-area-inset-bottom, 12px);
+    }
+
+    .screen {
+      display: none;
+      flex: 1;
+      min-height: 0;
+      flex-direction: column;
+    }
+
+    .screen.active {
+      display: flex;
+    }
+
+    .start-screen {
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 14px 12px;
+      text-align: center;
+    }
+
+    .logo-box {
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .title {
+      margin: 0;
+      font-size: 2.3rem;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+      margin: 0;
+      font-size: 0.88rem;
+      color: var(--muted);
+      max-width: 300px;
+      line-height: 1.4;
+    }
+
+    .mode-selector {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      margin: 8px 0;
+    }
+
+    .mode-card {
+      width: 100%;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 10px 13px;
+      color: var(--text);
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .mode-card.selected {
+      border-color: var(--accent);
+      background: rgba(34, 197, 94, 0.14);
+    }
+
+    .mode-title {
+      font-size: 0.9rem;
+      font-weight: 800;
+    }
+
+    .mode-desc {
+      font-size: 0.74rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .start-actions {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-play {
+      width: 100%;
+      max-width: 280px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: var(--accent);
+      color: #052e16;
+      border: none;
+      border-radius: 999px;
+      padding: 15px 34px;
+      font-size: 1.08rem;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 10px 26px rgba(34, 197, 94, 0.32);
+      min-height: 52px;
+    }
+
+    .btn-play:active {
+      transform: scale(0.97);
+      background: var(--accent-hover);
+    }
+
+    .btn-install {
+      width: 100%;
+      max-width: 280px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      background: rgba(255, 255, 255, 0.06);
+      color: #cbd5e1;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 999px;
+      padding: 9px 18px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-install:active {
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .ball-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 2px solid #052e16;
+      display: inline-block;
+    }
+
+    .credit {
+      font-size: 0.74rem;
+      color: var(--muted);
+      opacity: 0.85;
+    }
+
+    .setup-screen {
+      gap: 10px;
+      padding-top: 6px;
+    }
+
+    .setup-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .setup-header h2 {
+      margin: 0;
+      font-size: 1.15rem;
+      font-weight: 800;
+    }
+
+    .setup-scroll {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding-right: 2px;
+    }
+
+    .field-group {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .field-label {
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .text-input, .select-input {
+      width: 100%;
+      background: var(--card-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 11px 13px;
+      color: var(--text);
+      font-size: 0.94rem;
+      outline: none;
+    }
+
+    .text-input:focus, .select-input:focus {
+      border-color: var(--accent);
+    }
+
+    .option-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    .pitch-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pitch-board {
+      position: relative;
+      width: 100%;
+      max-width: 310px;
+      height: 205px;
+      border-radius: 14px;
+      background: linear-gradient(180deg, #14532d 0%, #166534 50%, #14532d 100%);
+      border: 2px solid rgba(255, 255, 255, 0.25);
+      overflow: hidden;
+      box-shadow: inset 0 0 22px rgba(0, 0, 0, 0.35);
+    }
+
+    .pitch-lines {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .pos-node {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(11, 17, 24, 0.85);
+      border: 2px solid rgba(255, 255, 255, 0.6);
+      color: #f8fafc;
+      font-size: 0.68rem;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.12s ease, background 0.12s ease, border-color 0.12s ease;
+    }
+
+    .pos-node.selected {
+      background: #22c55e;
+      color: #052e16;
+      border-color: #ffffff;
+      transform: translate(-50%, -50%) scale(1.14);
+      box-shadow: 0 0 14px rgba(34, 197, 94, 0.7);
+    }
+
+    .pos-caption {
+      font-size: 0.78rem;
+      color: #cbd5e1;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    .option-btn {
+      width: 100%;
+      text-align: left;
+      background: var(--card-2);
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      padding: 10px 12px;
+      color: var(--text);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .option-btn.selected {
+      border-color: var(--accent);
+      background: rgba(34, 197, 94, 0.14);
+    }
+
+    .opt-main {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-weight: 700;
+      font-size: 0.88rem;
+    }
+
+    .opt-sub {
+      font-size: 0.74rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .btn-shuffle-small {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-confirm {
+      width: 100%;
+      background: var(--accent);
+      color: #052e16;
+      border: none;
+      border-radius: 15px;
+      padding: 14px;
+      font-size: 1rem;
+      font-weight: 900;
+      cursor: pointer;
+      min-height: 50px;
+    }
+
+    .game-screen {
+      gap: 7px;
+      justify-content: space-between;
+    }
+
+    .top-player {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 8px 11px;
+      gap: 8px;
+    }
+
+    .player-left {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      min-width: 0;
+    }
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: var(--card-3);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-weight: 900;
+      font-size: 0.72rem;
+      color: #4ade80;
+    }
+
+    .player-name {
+      font-size: 0.9rem;
+      font-weight: 800;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .player-meta {
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    .ovr-badge {
+      background: rgba(34, 197, 94, 0.16);
+      color: #4ade80;
+      border: 1px solid rgba(34, 197, 94, 0.4);
+      border-radius: 11px;
+      padding: 5px 9px;
+      font-weight: 900;
+      font-size: 0.82rem;
+      flex-shrink: 0;
+    }
+
+    .morals {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
+
+    .morals.three-cols {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .moral-chip {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      padding: 5px 4px;
+      text-align: center;
+    }
+
+    .moral-label {
+      font-size: 0.62rem;
+      color: var(--muted);
+      display: block;
+    }
+
+    .moral-val {
+      font-size: 0.84rem;
+      font-weight: 800;
+    }
+
+    .stats-strip {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 5px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 5px 6px;
+      text-align: center;
+    }
+
+    .stat-box span {
+      display: block;
+      font-size: 0.58rem;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .stat-box strong {
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: #e2e8f0;
+    }
+
+    .club-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      padding: 7px 11px;
+      font-size: 0.78rem;
+      gap: 8px;
+    }
+
+    .club-identity {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-weight: 700;
+      min-width: 0;
+    }
+
+    .club-name-txt {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .color-dots {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      flex-shrink: 0;
+    }
+
+    .dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+    }
+
+    .standing-pill {
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 0.74rem;
+      flex-shrink: 0;
+    }
+
+    .center-stage {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow-y: auto;
+    }
+
+    .event-card {
+      width: 100%;
+      max-height: 100%;
+      overflow-y: auto;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .event-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.72rem;
+      color: var(--muted);
+      gap: 6px;
+    }
+
+    .tag {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 3px 9px;
+      border-radius: 999px;
+      color: #dbeafe;
+      font-weight: 700;
+    }
+
+    .event-title {
+      margin: 0;
+      font-size: 1.02rem;
+      line-height: 1.26;
+      font-weight: 800;
+    }
+
+    .event-desc {
+      margin: 0;
+      font-size: 0.84rem;
+      line-height: 1.42;
+      color: #cbd5e1;
+    }
+
+    .choices {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      margin-top: 2px;
+    }
+
+    .btn-choice {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      font-weight: 700;
+      font-size: 0.84rem;
+      cursor: pointer;
+      background: var(--card-2);
+      color: var(--text);
+      text-align: left;
+      min-height: 42px;
+    }
+
+    .btn-choice.yes {
+      background: rgba(34, 197, 94, 0.15);
+      border-color: rgba(34, 197, 94, 0.45);
+      color: #86efac;
+    }
+
+    .btn-choice.no {
+      background: rgba(239, 68, 68, 0.14);
+      border-color: rgba(239, 68, 68, 0.4);
+      color: #fca5a5;
+    }
+
+    .btn-choice.neutral {
+      background: rgba(56, 189, 248, 0.14);
+      border-color: rgba(56, 189, 248, 0.42);
+      color: #bae6fd;
+    }
+
+    .outcome-box {
+      background: rgba(255, 255, 255, 0.04);
+      border-left: 3px solid var(--accent);
+      border-radius: 10px;
+      padding: 9px 11px;
+      font-size: 0.82rem;
+      line-height: 1.38;
+    }
+
+    .outcome-box.fail {
+      border-left-color: var(--danger);
+    }
+
+    .career-table-wrap {
+      width: 100%;
+      max-height: 195px;
+      overflow: auto;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--card-2);
+    }
+
+    .career-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.68rem;
+      text-align: left;
+    }
+
+    .career-table th {
+      position: sticky;
+      top: 0;
+      background: #0f172a;
+      color: var(--muted);
+      padding: 6px 6px;
+      font-weight: 800;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    .career-table td {
+      padding: 5px 6px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      white-space: nowrap;
+    }
+
+    .bottom-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 3px 2px;
+    }
+
+    .season-info {
+      font-size: 0.74rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .btn-arrow {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: none;
+      background: var(--accent);
+      color: #052e16;
+      font-size: 1.25rem;
+      font-weight: 900;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 18px rgba(34, 197, 94, 0.28);
+    }
+
+    .btn-arrow:disabled {
+      opacity: 0.25;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.72);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 50;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-card {
+      width: 100%;
+      max-width: 360px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <!-- 1. TELA INICIAL -->
+    <section class="screen start-screen active" id="startScreen">
+      <div class="logo-box">
+        <svg width="106" height="106" viewBox="0 0 110 110" fill="none" aria-label="Logo O Bagre">
+          <defs>
+            <radialGradient id="badgeBg" cx="35%" cy="25%" r="75%">
+              <stop offset="0%" stop-color="#1e3a5f" />
+              <stop offset="100%" stop-color="#0f172a" />
+            </radialGradient>
+            <linearGradient id="fishBody" x1="18" y1="32" x2="80" y2="62" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#38bdf8" />
+              <stop offset="55%" stop-color="#0284c7" />
+              <stop offset="100%" stop-color="#0369a1" />
+            </linearGradient>
+            <linearGradient id="fishBelly" x1="25" y1="48" x2="72" y2="60" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#bae6fd" />
+              <stop offset="100%" stop-color="#7dd3fc" />
+            </linearGradient>
+          </defs>
+          <!-- Emblema -->
+          <circle cx="55" cy="55" r="50" fill="url(#badgeBg)" stroke="#22c55e" stroke-width="2.5" />
+          <circle cx="55" cy="55" r="44" stroke="rgba(255,255,255,0.08)" stroke-width="1.2" stroke-dasharray="4 3" />
+
+          <!-- Barbatana dorsal -->
+          <path d="M44 33L53 21L60 34Z" fill="#0ea5e9" stroke="#e0f2fe" stroke-width="1.6" stroke-linejoin="round" />
+          <!-- Barbatana peitoral -->
+          <path d="M42 52L34 62L48 56Z" fill="#38bdf8" stroke="#e0f2fe" stroke-width="1.5" stroke-linejoin="round" />
+
+          <!-- Corpo do Bagre -->
+          <path d="M19 48C26 32 50 29 68 41L85 30L81 47L86 63L68 53C50 64 26 62 19 48Z" fill="url(#fishBody)" stroke="#e0f2fe" stroke-width="2" stroke-linejoin="round" />
+          <!-- Barriga clara -->
+          <path d="M23 49C32 58 51 58 65 51C51 54 34 54 23 49Z" fill="url(#fishBelly)" />
+
+          <!-- Bigodes de Bagre -->
+          <path d="M21 49C13 48 10 53 9 57" stroke="#facc15" stroke-width="2.2" stroke-linecap="round" />
+          <path d="M23 52C16 54 14 59 14 63" stroke="#fde047" stroke-width="1.8" stroke-linecap="round" />
+          <path d="M22 45C15 42 12 43 10 45" stroke="#facc15" stroke-width="1.6" stroke-linecap="round" />
+
+          <!-- Olho estilizado -->
+          <circle cx="31" cy="44" r="4.2" fill="#ffffff" />
+          <circle cx="30" cy="44" r="2.2" fill="#0b1118" />
+          <circle cx="29.3" cy="43.2" r="0.8" fill="#ffffff" />
+
+          <!-- Bola de Futebol Clássica -->
+          <g transform="translate(69, 72)">
+            <circle cx="0" cy="0" r="14.5" fill="#ffffff" stroke="#0b1118" stroke-width="2.2" />
+            <polygon points="0,-6 5.7,-1.8 3.5,4.9 -3.5,4.9 -5.7,-1.8" fill="#0b1118" />
+            <line x1="0" y1="-6" x2="0" y2="-14" stroke="#0b1118" stroke-width="1.6" />
+            <line x1="5.7" y1="-1.8" x2="13.2" y2="-4.2" stroke="#0b1118" stroke-width="1.6" />
+            <line x1="-5.7" y1="-1.8" x2="-13.2" y2="-4.2" stroke="#0b1118" stroke-width="1.6" />
+            <line x1="3.5" y1="4.9" x2="8.5" y2="11.5" stroke="#0b1118" stroke-width="1.6" />
+            <line x1="-3.5" y1="4.9" x2="-8.5" y2="11.5" stroke="#0b1118" stroke-width="1.6" />
+          </g>
+        </svg>
+        <h1 class="title">O Bagre</h1>
+        <p class="subtitle">Onde dominar a bola de canela é arte, e assinar carteira no Atacadão é plano de carreira.</p>
+      </div>
+
+      <div class="mode-selector" id="modeSelector"></div>
+
+      <div class="start-actions">
+        <button class="btn-play" id="btnGoSetup" type="button">
+          <span class="ball-dot"></span>
+          <span>JOGAR</span>
+        </button>
+        <button class="btn-install" id="btnInstallApp" type="button">
+          <span>📲 Adicionar à tela inicial</span>
+        </button>
+      </div>
+
+      <div class="credit">desenvolvido por Ronaldo Paz</div>
+    </section>
+
+    <!-- 2. TELA DE CRIAÇÃO -->
+    <section class="screen setup-screen" id="setupScreen">
+      <div class="setup-header">
+        <h2>Montar Bagre</h2>
+        <span class="credit">desenvolvido por Ronaldo Paz</span>
+      </div>
+
+      <div class="setup-scroll">
+        <div class="field-group">
+          <label class="field-label" for="inputName">Seu nome</label>
+          <input class="text-input" id="inputName" type="text" maxlength="26" placeholder="Ex: Bagre da Vila" value="Bagre da Vila" />
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="selectNationality">Nacionalidade (define clubes e empregos iniciais)</label>
+          <select class="select-input" id="selectNationality"></select>
+        </div>
+
+        <div class="field-group">
+          <span class="field-label">Posição em campo (toque na bolinha)</span>
+          <div class="pitch-wrap" id="positionPitchWrap"></div>
+        </div>
+
+        <div class="field-group">
+          <span class="field-label">Estilo do jogador</span>
+          <div class="option-grid" id="styleOptions"></div>
+        </div>
+
+        <div class="field-group">
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
+            <span class="field-label">Onde começa a carreira</span>
+            <button type="button" class="btn-shuffle-small" id="btnRerollStarts">🎲 Sortear outras</button>
+          </div>
+          <div class="option-grid" id="startOptions"></div>
+        </div>
+      </div>
+
+      <button class="btn-confirm" id="btnStartCareer" type="button">Iniciar carreira</button>
+    </section>
+
+    <!-- 3. TELA DO JOGO -->
+    <main class="screen game-screen" id="gameScreen">
+      <div class="top-player">
+        <div class="player-left">
+          <div class="avatar" id="avatarShirt" aria-hidden="true">
+            <span>#83</span>
+            <span style="font-size:0.56rem; color:#94a3b8;" id="avatarPos">CA</span>
+          </div>
+          <div style="min-width:0;">
+            <div class="player-name" id="playerName">Bagre da Vila</div>
+            <div class="player-meta" id="playerMeta">16 anos • Farrista</div>
+          </div>
+        </div>
+        <div class="ovr-badge" id="ovrBadge">OVR 31</div>
+      </div>
+
+      <div class="morals" id="moralsGrid">
+        <div class="moral-chip" id="chipPastor">
+          <span class="moral-label">Pastor</span>
+          <span class="moral-val" id="mPastor">50</span>
+        </div>
+        <div class="moral-chip">
+          <span class="moral-label">Torcida</span>
+          <span class="moral-val" id="mTorcida">50</span>
+        </div>
+        <div class="moral-chip">
+          <span class="moral-label">Técnico</span>
+          <span class="moral-val" id="mTecnico">50</span>
+        </div>
+        <div class="moral-chip">
+          <span class="moral-label">Time</span>
+          <span class="moral-val" id="mTime">50</span>
+        </div>
+      </div>
+
+      <div class="stats-strip">
+        <div class="stat-box"><span>Jogos</span><strong id="stGames">0</strong></div>
+        <div class="stat-box"><span>Gols</span><strong id="stGoals">0</strong></div>
+        <div class="stat-box"><span>Assist.</span><strong id="stAssists">0</strong></div>
+        <div class="stat-box"><span>Cartões</span><strong id="stCards">0A/0V</strong></div>
+        <div class="stat-box"><span>Títulos</span><strong id="stTitles">0</strong></div>
+      </div>
+
+      <div class="club-bar">
+        <div class="club-identity">
+          <span class="color-dots">
+            <span class="dot" id="dot1"></span>
+            <span class="dot" id="dot2"></span>
+          </span>
+          <span class="club-name-txt" id="clubTitle">Sem Clube</span>
+        </div>
+        <div class="standing-pill" id="standingInfo">-</div>
+      </div>
+
+      <div class="center-stage">
+        <div class="event-card" id="eventCard"></div>
+      </div>
+
+      <div class="bottom-nav">
+        <span class="season-info" id="seasonInfo">Temporada 1 • 1/4</span>
+        <button class="btn-arrow" id="btnNext" title="Avançar" aria-label="Avançar" type="button">➔</button>
+      </div>
+    </main>
+  </div>
+
+  <!-- MODAL DE INSTALAÇÃO ANDROID -->
+  <div class="modal-backdrop" id="installModal">
+    <div class="modal-card">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <strong style="font-size:0.98rem;">📲 Instalar no Android</strong>
+        <button type="button" id="btnCloseInstallModal" style="background:none; border:none; color:#94a3b8; font-size:1.1rem; cursor:pointer;">✕</button>
+      </div>
+      <p style="margin:0; font-size:0.82rem; color:#cbd5e1; line-height:1.45;">
+        Para jogar <strong>O Bagre</strong> em tela cheia direto da tela inicial do seu celular:
+      </p>
+      <ol style="margin:0; padding-left:18px; font-size:0.8rem; color:#93a6bc; line-height:1.5;">
+        <li>Abra o jogo no navegador <strong>Chrome</strong> do Android.</li>
+        <li>Toque no menu <strong>⋮</strong> (três pontinhos no canto superior direito).</li>
+        <li>Selecione <strong>"Adicionar à tela inicial"</strong> ou <strong>"Instalar aplicativo"</strong>.</li>
+      </ol>
+      <button type="button" class="btn-confirm" id="btnOkInstallModal" style="min-height:42px; padding:10px;">Entendi</button>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Manifesto Web App dinâmico para Android / PWA
+      try {
+        const iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 110 110"><rect width="110" height="110" rx="24" fill="#0b1118"/><circle cx="55" cy="55" r="46" fill="#172230" stroke="#22c55e" stroke-width="4"/><path d="M20 48C27 33 50 30 68 41L84 31V62L68 53C50 64 27 61 20 48Z" fill="#38bdf8"/><circle cx="72" cy="74" r="14" fill="#ffffff"/></svg>`;
+        const iconDataUri = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(iconSvg);
+        const manifestObj = {
+          name: "O Bagre - Carreira de Perna de Pau",
+          short_name: "O Bagre",
+          description: "Simulador bem-humorado de carreira de jogador bagre.",
+          start_url: ".",
+          display: "standalone",
+          orientation: "portrait",
+          background_color: "#0b1118",
+          theme_color: "#0b1118",
+          icons: [
+            { src: iconDataUri, sizes: "192x192", type: "image/svg+xml", purpose: "any maskable" },
+            { src: iconDataUri, sizes: "512x512", type: "image/svg+xml", purpose: "any maskable" }
+          ]
+        };
+        const manifestBlob = new Blob([JSON.stringify(manifestObj)], { type: "application/manifest+json" });
+        const linkEl = document.createElement("link");
+        linkEl.rel = "manifest";
+        linkEl.href = URL.createObjectURL(manifestBlob);
+        document.head.appendChild(linkEl);
+      } catch (e) {}
+
+      let deferredInstallPrompt = null;
+      window.addEventListener("beforeinstallprompt", (e) => {
+        e.preventDefault();
+        deferredInstallPrompt = e;
+      });
+
+      const GAME_MODES = [
+        {
+          id: "normal",
+          label: "⚽ Carreira Normal",
+          desc: "Jogue temporada por temporada tomando todas as decisões (16 aos 37 anos)."
+        },
+        {
+          id: "rapida",
+          label: "⚡ Carreira Rápida",
+          desc: "Pula direto para o compilado de cada fim de temporada com propostas e estatísticas."
+        },
+        {
+          id: "ligeirinho",
+          label: "🚀 Ligeirinho (Ultra-rápida)",
+          desc: "Simula toda a carreira instantaneamente até a aposentadoria com tabela completa."
+        }
+      ];
+
+      const NATIONALITIES = [
+        { id: "BRA", name: "Brasil", flag: "🇧🇷", team: "Seleção Brasileira", top20: true, altitude: false },
+        { id: "ARG", name: "Argentina", flag: "🇦🇷", team: "Selección Argentina", top20: true, altitude: false },
+        { id: "BOL", name: "Bolívia", flag: "🇧🇴", team: "Selección Boliviana", top20: false, altitude: true, altComp: "Eliminatórias Sul-Americanas" },
+        { id: "PER", name: "Peru", flag: "🇵🇪", team: "Selección Peruana", top20: false, altitude: true, altComp: "Eliminatórias Sul-Americanas" },
+        { id: "ECU", name: "Equador", flag: "🇪🇨", team: "Selección Ecuatoriana", top20: false, altitude: true, altComp: "Eliminatórias Sul-Americanas" },
+        { id: "COL", name: "Colômbia", flag: "🇨🇴", team: "Selección Colombia", top20: true, altitude: true },
+        { id: "CHI", name: "Chile", flag: "🇨🇱", team: "Selección Chilena", top20: false, altitude: true, altComp: "Amistoso Internacional" },
+        { id: "MEX", name: "México", flag: "🇲🇽", team: "Selección Mexicana", top20: true, altitude: true },
+        { id: "ESP", name: "Espanha", flag: "🇪🇸", team: "Selección Española", top20: true, altitude: false },
+        { id: "ENG", name: "Inglaterra", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", team: "England National Team", top20: true, altitude: false },
+        { id: "POR", name: "Portugal", flag: "🇵🇹", team: "Seleção Portuguesa", top20: true, altitude: false },
+        { id: "JPN", name: "Japão", flag: "🇯🇵", team: "Seleção Japonesa", top20: true, altitude: false },
+        { id: "CHN", name: "China", flag: "🇨🇳", team: "Seleção Chinesa", top20: false, altitude: false, altComp: "Copa da Ásia" },
+        { id: "ALB", name: "Albânia", flag: "🇦🇱", team: "Seleção da Albânia", top20: false, altitude: false, altComp: "Liga das Nações" },
+        { id: "BAN", name: "Bangladesh", flag: "🇧🇩", team: "Seleção de Bangladesh", top20: false, altitude: false, altComp: "Copa da Ásia" }
+      ];
+
+      const POSITIONS = [
+        {
+          id: "GOL",
+          label: "Goleiro (GOL)",
+          x: 50,
+          y: 86,
+          desc: "Especialista em bracinho de jacaré e frango defensável.",
+          goalChance: 0.01,
+          assistChance: 0.04,
+          cardChance: 0.08,
+          insults: [
+            "porque você é mão de alface",
+            "porque você pula depois que a bola já entrou",
+            "porque você tem bracinho de jacaré",
+            "porque você espalma toda bola pro pé do atacante",
+            "porque até tiro de meta você cobra pra lateral"
+          ]
+        },
+        {
+          id: "LE",
+          label: "Lateral Esquerdo (LE)",
+          x: 16,
+          y: 68,
+          desc: "Avenida na marcação e cruzamento na bandeirinha do outro lado.",
+          goalChance: 0.06,
+          assistChance: 0.16,
+          cardChance: 0.18,
+          insults: [
+            "porque suas costas viraram uma avenida de 4 faixas",
+            "porque você cruza a bola direto na arquibancada",
+            "porque qualquer ponta de várzea te entorta",
+            "porque você sobe pro ataque e volta andando",
+            "porque você marca a dois metros de distância"
+          ]
+        },
+        {
+          id: "ZAG",
+          label: "Zagueiro (ZAG)",
+          x: 50,
+          y: 68,
+          desc: "Zagueiro de condomínio que rebate pra dentro da própria área.",
+          goalChance: 0.07,
+          assistChance: 0.05,
+          cardChance: 0.24,
+          insults: [
+            "porque você é zagueiro de condomínio",
+            "porque você rebate toda bola pro meio da área",
+            "porque você perde na corrida até pra tartaruga",
+            "porque você só sabe dar chutão pro mato",
+            "porque você faz pênalti bobo todo domingo"
+          ]
+        },
+        {
+          id: "LD",
+          label: "Lateral Direito (LD)",
+          x: 84,
+          y: 68,
+          desc: "Só toca pra trás e erra cobrança de lateral.",
+          goalChance: 0.06,
+          assistChance: 0.16,
+          cardChance: 0.18,
+          insults: [
+            "porque você não acerta um cruzamento na área",
+            "porque você reverte cobrança de lateral",
+            "porque deixou uma cratera na lateral direita",
+            "porque você só toca bola pra trás pro zagueiro",
+            "porque toma bola nas costas todo santo jogo"
+          ]
+        },
+        {
+          id: "VOL",
+          label: "Volante (VOL)",
+          x: 50,
+          y: 51,
+          desc: "Cão de guarda sem noção que chega atrasado em todas.",
+          goalChance: 0.08,
+          assistChance: 0.12,
+          cardChance: 0.28,
+          insults: [
+            "porque você só sabe dar carrinho atrasado",
+            "porque você entrega a paçoca na saída de bola",
+            "porque você coleciona cartão amarelo aos 10 minutos",
+            "porque você tem alergia a passe pra frente",
+            "porque você corre errado o jogo inteiro"
+          ]
+        },
+        {
+          id: "MEI",
+          label: "Meia Armador (MEI)",
+          x: 50,
+          y: 35,
+          desc: "Camisa 10 que se esconde atrás do volante adversário.",
+          goalChance: 0.15,
+          assistChance: 0.26,
+          cardChance: 0.12,
+          insults: [
+            "porque você se esconde atrás da marcação o jogo todo",
+            "porque você é meia de passe pro lado",
+            "porque você cansa no aquecimento antes do jogo",
+            "porque não acerta um lançamento de 5 metros",
+            "porque domina de canela e mata todo contra-ataque"
+          ]
+        },
+        {
+          id: "PE",
+          label: "Ponta Esquerda (PE)",
+          x: 18,
+          y: 22,
+          desc: "Cisca-cisca que dribla a si mesmo e sai com bola e tudo.",
+          goalChance: 0.20,
+          assistChance: 0.22,
+          cardChance: 0.11,
+          insults: [
+            "porque você é ponta cisca-cisca sem objetividade",
+            "porque você abaixa a cabeça e sai com bola e tudo pela linha de fundo",
+            "porque você tenta pedalar e cai sozinho",
+            "porque você não volta pra ajudar o lateral",
+            "porque chuta fraco de fora da área na mão do goleiro"
+          ]
+        },
+        {
+          id: "CA",
+          label: "Centroavante (CA)",
+          x: 50,
+          y: 16,
+          desc: "Cone na pequena área que isola gol sem goleiro.",
+          goalChance: 0.28,
+          assistChance: 0.12,
+          cardChance: 0.12,
+          insults: [
+            "porque você é um cone na pequena área",
+            "porque você perde gol feito embaixo da trave",
+            "porque você vive impedido o jogo inteiro",
+            "porque a bola bate na sua canela e volta",
+            "porque você não ganha uma dividida do zagueiro"
+          ]
+        },
+        {
+          id: "PD",
+          label: "Ponta Direita (PD)",
+          x: 82,
+          y: 22,
+          desc: "Triatleta da ponta: corre, pedala e nada.",
+          goalChance: 0.20,
+          assistChance: 0.22,
+          cardChance: 0.11,
+          insults: [
+            "porque você é ponta triatleta: corre, pedala e nada",
+            "porque você corta pro meio e isola a bola na lua",
+            "porque você é fominha e não toca pra ninguém livre",
+            "porque tropeça na própria perna na hora do drible",
+            "porque tem alergia a fazer gol"
+          ]
+        }
+      ];
+
+      const STYLES = [
+        {
+          id: "farrista",
+          label: "Farrista",
+          desc: "Resenha, churrasco e madrugadas; sobe Torcida/Time, mas derruba Técnico.",
+          init: { pastor: 35, torcida: 62, tecnico: 40, time: 60 },
+          mod: { torcida: 2, tecnico: -2, pastor: -2 }
+        },
+        {
+          id: "crente",
+          label: "Crente (Igreja & Culto)",
+          desc: "Oração, vigília e dízimo; libera eventos exclusivos na igreja e moral com o Pastor.",
+          init: { pastor: 78, torcida: 50, tecnico: 56, time: 46 },
+          mod: { pastor: 3, time: -1 }
+        },
+        {
+          id: "maria_vai",
+          label: "Maria vai com as outras",
+          desc: "Segue a onda do elenco ou do momento; oscila bastante dependendo da fase.",
+          init: { pastor: 50, torcida: 50, tecnico: 50, time: 55 },
+          mod: { time: 2, tecnico: -1 }
+        }
+      ];
+
+      const TIER0_CLUBS = [
+        // Brasil - Várzea famosa & Séries C/D
+        { name: "Pioneiro FC (Várzea SP)", country: "BRA", flag: "🇧🇷", tier: 0, c1: "#dc2626", c2: "#ffffff", salary: 650, teams: 16 },
+        { name: "Noroeste da Vila Formosa (Várzea SP)", country: "BRA", flag: "🇧🇷", tier: 0, c1: "#16a34a", c2: "#ffffff", salary: 700, teams: 16 },
+        { name: "Ajax da Vila Rica (Várzea SP)", country: "BRA", flag: "🇧🇷", tier: 0, c1: "#dc2626", c2: "#facc15", salary: 680, teams: 16 },
+        { name: "Inajar de Souza FC (Várzea SP)", country: "BRA", flag: "🇧🇷", tier: 0, c1: "#1d4ed8", c2: "#ffffff", salary: 720, teams: 16 },
+        { name: "Batti Fácil FC (Várzea RJ)", country: "BRA", flag: "🇧🇷", tier: 0, c1: "#111827", c2: "#facc15", salary: 650, teams: 14 },
+        { name: "Danados FC (Várzea MG)", country: "BRA", flag: "🇧🇷", tier: 0, c1: "#7c3aed", c2: "#ffffff", salary: 640, teams: 14 },
+        { name: "Íbis Sport Club (PE)", country: "BRA", flag: "🇧🇷", tier: 0, c1: "#dc2626", c2: "#111827", salary: 950, teams: 16 },
+        { name: "Salgueiro AC (Série D)", country: "BRA", flag: "🇧🇷", tier: 0, c1: "#16a34a", c2: "#dc2626", salary: 1200, teams: 16 },
+        { name: "Sousa EC (Dinossauro Série D)", country: "BRA", flag: "🇧🇷", tier: 0, c1: "#15803d", c2: "#ffffff", salary: 1350, teams: 16 },
+        { name: "Treze FC (Série D)", country: "BRA", flag: "🇧🇷", tier: 0, c1: "#111827", c2: "#ffffff", salary: 1400, teams: 16 },
+        { name: "Remo (Série C)", country: "BRA", flag: "🇧🇷", tier: 0, c1: "#1e3a8a", c2: "#ffffff", salary: 1800, teams: 20 },
+        { name: "Ferroviário AC (Série C)", country: "BRA", flag: "🇧🇷", tier: 0, c1: "#dc2626", c2: "#111827", salary: 1600, teams: 20 },
+        // Argentina
+        { name: "Sacachispas FC (Primera B Metro)", country: "ARG", flag: "🇦🇷", tier: 0, c1: "#7c3aed", c2: "#ffffff", salary: 1300, teams: 18 },
+        { name: "Deportivo Riestra B (Primera C)", country: "ARG", flag: "🇦🇷", tier: 0, c1: "#111827", c2: "#ffffff", salary: 1150, teams: 18 },
+        { name: "Excursionistas (Primera C)", country: "ARG", flag: "🇦🇷", tier: 0, c1: "#16a34a", c2: "#ffffff", salary: 1200, teams: 18 },
+        // Andes & México (Altitude)
+        { name: "Deportivo El Alto (Bolívia 2ª Div)", country: "BOL", flag: "🇧🇴", tier: 0, c1: "#0284c7", c2: "#facc15", salary: 1100, teams: 14 },
+        { name: "Real Potosí (Copa Simón Bolívar)", country: "BOL", flag: "🇧🇴", tier: 0, c1: "#7c3aed", c2: "#ffffff", salary: 1150, teams: 14 },
+        { name: "Sport Boys Warnes (Bolívia 2ª)", country: "BOL", flag: "🇧🇴", tier: 0, c1: "#2563eb", c2: "#ffffff", salary: 1050, teams: 14 },
+        { name: "Deportivo Coopsol (Liga 2 Peru)", country: "PER", flag: "🇵🇪", tier: 0, c1: "#facc15", c2: "#111827", salary: 1150, teams: 14 },
+        { name: "Alianza Universidad (Liga 2 Peru)", country: "PER", flag: "🇵🇪", tier: 0, c1: "#1d4ed8", c2: "#dc2626", salary: 1200, teams: 14 },
+        { name: "Chacaritas FC (Serie B Equador)", country: "ECU", flag: "🇪🇨", tier: 0, c1: "#dc2626", c2: "#16a34a", salary: 1180, teams: 12 },
+        { name: "9 de Octubre (Serie B Equador)", country: "ECU", flag: "🇪🇨", tier: 0, c1: "#0ea5e9", c2: "#ffffff", salary: 1250, teams: 12 },
+        { name: "Bogotá FC (Torneo BetPlay)", country: "COL", flag: "🇨🇴", tier: 0, c1: "#facc15", c2: "#dc2626", salary: 1220, teams: 16 },
+        { name: "Real Santander (Torneo BetPlay)", country: "COL", flag: "🇨🇴", tier: 0, c1: "#0284c7", c2: "#ffffff", salary: 1180, teams: 16 },
+        { name: "Rangers de Talca (Primera B Chile)", country: "CHI", flag: "🇨🇱", tier: 0, c1: "#dc2626", c2: "#111827", salary: 1300, teams: 16 },
+        { name: "Deportes Concepción (Segunda Chile)", country: "CHI", flag: "🇨🇱", tier: 0, c1: "#7c3aed", c2: "#ffffff", salary: 1200, teams: 14 },
+        { name: "Alebrijes de Oaxaca (Liga Expansión MX)", country: "MEX", flag: "🇲🇽", tier: 0, c1: "#f97316", c2: "#111827", salary: 1650, teams: 16 },
+        { name: "Correcaminos UAT (Liga Expansión MX)", country: "MEX", flag: "🇲🇽", tier: 0, c1: "#ea580c", c2: "#1d4ed8", salary: 1600, teams: 16 },
+        // Espanha, Inglaterra, Portugal
+        { name: "Recreativo de Huelva (1ª RFEF Espanha)", country: "ESP", flag: "🇪🇸", tier: 0, c1: "#2563eb", c2: "#ffffff", salary: 1700, teams: 20 },
+        { name: "CE Europa (2ª RFEF Espanha)", country: "ESP", flag: "🇪🇸", tier: 0, c1: "#1d4ed8", c2: "#ffffff", salary: 1500, teams: 18 },
+        { name: "Wrexham AFC (League One Inglaterra)", country: "ENG", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", tier: 0, c1: "#dc2626", c2: "#ffffff", salary: 2100, teams: 24 },
+        { name: "Notts County (League Two Inglaterra)", country: "ENG", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", tier: 0, c1: "#111827", c2: "#ffffff", salary: 1850, teams: 24 },
+        { name: "Académica de Coimbra (Liga 3 Portugal)", country: "POR", flag: "🇵🇹", tier: 0, c1: "#111827", c2: "#ffffff", salary: 1550, teams: 16 },
+        { name: "Belenenses (Liga 3 Portugal)", country: "POR", flag: "🇵🇹", tier: 0, c1: "#2563eb", c2: "#ffffff", salary: 1500, teams: 16 },
+        // Ásia & Ligas Alternativas
+        { name: "Mito HollyHock (J2 League Japão)", country: "JPN", flag: "🇯🇵", tier: 0, c1: "#1d4ed8", c2: "#ffffff", salary: 1750, teams: 20 },
+        { name: "FC Ryukyu (J3 League Japão)", country: "JPN", flag: "🇯🇵", tier: 0, c1: "#991b1b", c2: "#facc15", salary: 1450, teams: 20 },
+        { name: "Guangzhou FC (China League One)", country: "CHN", flag: "🇨🇳", tier: 0, c1: "#dc2626", c2: "#facc15", salary: 1700, teams: 16 },
+        { name: "Nanjing City (China League One)", country: "CHN", flag: "🇨🇳", tier: 0, c1: "#1d4ed8", c2: "#ffffff", salary: 1600, teams: 16 },
+        { name: "KS Dinamo Tirana B (Albânia)", country: "ALB", flag: "🇦🇱", tier: 0, c1: "#2563eb", c2: "#ffffff", salary: 1200, teams: 12 },
+        { name: "KF Lushnja (2ª Div Albânia)", country: "ALB", flag: "🇦🇱", tier: 0, c1: "#16a34a", c2: "#facc15", salary: 1100, teams: 12 },
+        { name: "Dhaka Wanderers (Bangladesh)", country: "BAN", flag: "🇧🇩", tier: 0, c1: "#16a34a", c2: "#dc2626", salary: 950, teams: 12 },
+        { name: "Bashundhara Kings B (Bangladesh)", country: "BAN", flag: "🇧🇩", tier: 0, c1: "#dc2626", c2: "#111827", salary: 1050, teams: 12 }
+      ];
+
+      const TIER1_CLUBS = [
+        { name: "Sport Recife (Série B)", country: "BRA", flag: "🇧🇷", tier: 1, c1: "#dc2626", c2: "#111827", salary: 8500, teams: 20 },
+        { name: "Ceará SC (Série B)", country: "BRA", flag: "🇧🇷", tier: 1, c1: "#111827", c2: "#ffffff", salary: 8200, teams: 20 },
+        { name: "Goiás EC (Série B)", country: "BRA", flag: "🇧🇷", tier: 1, c1: "#15803d", c2: "#ffffff", salary: 7900, teams: 20 },
+        { name: "Avaí FC (Série B)", country: "BRA", flag: "🇧🇷", tier: 1, c1: "#0284c7", c2: "#ffffff", salary: 7600, teams: 20 },
+        { name: "Real Zaragoza (LaLiga 2)", country: "ESP", flag: "🇪🇸", tier: 1, c1: "#2563eb", c2: "#ffffff", salary: 11000, teams: 22 },
+        { name: "Sporting Gijón (LaLiga 2)", country: "ESP", flag: "🇪🇸", tier: 1, c1: "#dc2626", c2: "#ffffff", salary: 10500, teams: 22 },
+        { name: "Millwall FC (Championship)", country: "ENG", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", tier: 1, c1: "#1e3a8a", c2: "#ffffff", salary: 13000, teams: 24 },
+        { name: "Blackburn Rovers (Championship)", country: "ENG", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", tier: 1, c1: "#2563eb", c2: "#ffffff", salary: 13500, teams: 24 },
+        { name: "Quilmes AC (Primera Nacional)", country: "ARG", flag: "🇦🇷", tier: 1, c1: "#1e3a8a", c2: "#ffffff", salary: 6800, teams: 20 },
+        { name: "The Strongest (Bolívia A)", country: "BOL", flag: "🇧🇴", tier: 1, c1: "#facc15", c2: "#111827", salary: 6500, teams: 16 },
+        { name: "Cienciano (Liga 1 Peru)", country: "PER", flag: "🇵🇪", tier: 1, c1: "#dc2626", c2: "#ffffff", salary: 6400, teams: 18 },
+        { name: "Club Puebla (Liga MX)", country: "MEX", flag: "🇲🇽", tier: 1, c1: "#2563eb", c2: "#ffffff", salary: 9500, teams: 18 }
+      ];
+
+      const TIER2_CLUBS = [
+        { name: "EC Bahia (Série A)", country: "BRA", flag: "🇧🇷", tier: 2, c1: "#1d4ed8", c2: "#dc2626", salary: 32000, teams: 20 },
+        { name: "Fortaleza EC (Série A)", country: "BRA", flag: "🇧🇷", tier: 2, c1: "#1d4ed8", c2: "#dc2626", salary: 34000, teams: 20 },
+        { name: "Cruzeiro EC (Série A)", country: "BRA", flag: "🇧🇷", tier: 2, c1: "#1e40af", c2: "#ffffff", salary: 38000, teams: 20 },
+        { name: "CR Vasco da Gama (Série A)", country: "BRA", flag: "🇧🇷", tier: 2, c1: "#111827", c2: "#ffffff", salary: 36000, teams: 20 },
+        { name: "São Paulo FC (Série A)", country: "BRA", flag: "🇧🇷", tier: 2, c1: "#dc2626", c2: "#111827", salary: 42000, teams: 20 },
+        { name: "Getafe CF (LaLiga)", country: "ESP", flag: "🇪🇸", tier: 2, c1: "#1d4ed8", c2: "#ffffff", salary: 45000, teams: 20 },
+        { name: "Rayo Vallecano (LaLiga)", country: "ESP", flag: "🇪🇸", tier: 2, c1: "#ffffff", c2: "#dc2626", salary: 44000, teams: 20 },
+        { name: "Wolverhampton (Premier League)", country: "ENG", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", tier: 2, c1: "#f59e0b", c2: "#111827", salary: 58000, teams: 20 },
+        { name: "SC Braga (Primeira Liga)", country: "POR", flag: "🇵🇹", tier: 2, c1: "#dc2626", c2: "#ffffff", salary: 39000, teams: 18 }
+      ];
+
+      const TIER3_CLUBS = [
+        { name: "CR Flamengo (Gigante)", country: "BRA", flag: "🇧🇷", tier: 3, c1: "#dc2626", c2: "#111827", salary: 120000, teams: 20 },
+        { name: "SE Palmeiras (Gigante)", country: "BRA", flag: "🇧🇷", tier: 3, c1: "#15803d", c2: "#ffffff", salary: 125000, teams: 20 },
+        { name: "Real Madrid CF (Europa)", country: "ESP", flag: "🇪🇸", tier: 3, c1: "#ffffff", c2: "#facc15", salary: 250000, teams: 20 },
+        { name: "FC Barcelona (Europa)", country: "ESP", flag: "🇪🇸", tier: 3, c1: "#1d4ed8", c2: "#dc2626", salary: 230000, teams: 20 },
+        { name: "Manchester City (Europa)", country: "ENG", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", tier: 3, c1: "#38bdf8", c2: "#ffffff", salary: 260000, teams: 20 },
+        { name: "Liverpool FC (Europa)", country: "ENG", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", tier: 3, c1: "#dc2626", c2: "#ffffff", salary: 240000, teams: 20 }
+      ];
+
+      const JOBS_POOL = [
+        { name: "Atacadão Central (Repositor)", country: "BRA", flag: "🇧🇷", c1: "#eab308", c2: "#1d4ed8", salary: 1520 },
+        { name: "Assaí Atacadista (Caixa)", country: "BRA", flag: "🇧🇷", c1: "#f97316", c2: "#1d4ed8", salary: 1580 },
+        { name: "Verdurão do Seu Zé", country: "BRA", flag: "🇧🇷", c1: "#16a34a", c2: "#f97316", salary: 1320 },
+        { name: "Mercadinho Bom Preço", country: "BRA", flag: "🇧🇷", c1: "#22c55e", c2: "#ffffff", salary: 1410 },
+        { name: "Lava-Jato Espuma do Cerrado", country: "BRA", flag: "🇧🇷", c1: "#0ea5e9", c2: "#facc15", salary: 1380 },
+        { name: "Depósito de Tijolo Rocha", country: "BRA", flag: "🇧🇷", c1: "#ea580c", c2: "#1e293b", salary: 1490 },
+        { name: "Supermercados Coto (Repositor)", country: "ARG", flag: "🇦🇷", c1: "#dc2626", c2: "#2563eb", salary: 1450 },
+        { name: "Carrefour Express Buenos Aires", country: "ARG", flag: "🇦🇷", c1: "#2563eb", c2: "#dc2626", salary: 1480 },
+        { name: "Hipermaxi La Paz (Estoque)", country: "BOL", flag: "🇧🇴", c1: "#dc2626", c2: "#facc15", salary: 1280 },
+        { name: "Supermercados Ketal (El Alto)", country: "BOL", flag: "🇧🇴", c1: "#16a34a", c2: "#ffffff", salary: 1240 },
+        { name: "Supermercados Wong (Lima)", country: "PER", flag: "🇵🇪", c1: "#dc2626", c2: "#ffffff", salary: 1340 },
+        { name: "Plaza Vea (Cajero)", country: "PER", flag: "🇵🇪", c1: "#dc2626", c2: "#facc15", salary: 1310 },
+        { name: "Supermaxi Quito (Repositor)", country: "ECU", flag: "🇪🇨", c1: "#dc2626", c2: "#ffffff", salary: 1360 },
+        { name: "Mi Comisariato (Guayaquil)", country: "ECU", flag: "🇪🇨", c1: "#16a34a", c2: "#facc15", salary: 1330 },
+        { name: "Almacenes Éxito (Bogotá)", country: "COL", flag: "🇨🇴", c1: "#facc15", c2: "#111827", salary: 1390 },
+        { name: "Tiendas D1 (Bodega)", country: "COL", flag: "🇨🇴", c1: "#dc2626", c2: "#ffffff", salary: 1320 },
+        { name: "Supermercados Líder (Santiago)", country: "CHI", flag: "🇨🇱", c1: "#2563eb", c2: "#facc15", salary: 1480 },
+        { name: "Jumbo Chile (Reponedor)", country: "CHI", flag: "🇨🇱", c1: "#16a34a", c2: "#ffffff", salary: 1510 },
+        { name: "Tiendas OXXO (Turno Nocturno)", country: "MEX", flag: "🇲🇽", c1: "#dc2626", c2: "#facc15", salary: 1460 },
+        { name: "Bodega Aurrerá (México DF)", country: "MEX", flag: "🇲🇽", c1: "#16a34a", c2: "#facc15", salary: 1490 },
+        { name: "Mercadona (Reponedor Madrid)", country: "ESP", flag: "🇪🇸", c1: "#16a34a", c2: "#f97316", salary: 1950 },
+        { name: "Supermercados Día (Caja)", country: "ESP", flag: "🇪🇸", c1: "#dc2626", c2: "#ffffff", salary: 1850 },
+        { name: "Tesco Express (Stock Clerk)", country: "ENG", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", c1: "#1d4ed8", c2: "#dc2626", salary: 2150 },
+        { name: "Sainsbury's Local (Warehouse)", country: "ENG", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", c1: "#f97316", c2: "#7c2d12", salary: 2100 },
+        { name: "Pingo Doce (Repositor Lisboa)", country: "POR", flag: "🇵🇹", c1: "#16a34a", c2: "#111827", salary: 1750 },
+        { name: "Continente Bom Dia (Caixa)", country: "POR", flag: "🇵🇹", c1: "#dc2626", c2: "#ffffff", salary: 1720 },
+        { name: "7-Eleven Tokyo (Konbini)", country: "JPN", flag: "🇯🇵", c1: "#f97316", c2: "#16a34a", salary: 1980 },
+        { name: "Lawson Station (Osaka)", country: "JPN", flag: "🇯🇵", c1: "#0284c7", c2: "#ffffff", salary: 1940 },
+        { name: "Wumart Supermarket (Beijing)", country: "CHN", flag: "🇨🇳", c1: "#dc2626", c2: "#facc15", salary: 1620 },
+        { name: "RT-Mart (Shanghai)", country: "CHN", flag: "🇨🇳", c1: "#dc2626", c2: "#ffffff", salary: 1650 },
+        { name: "Big Market Tirana (Magazinier)", country: "ALB", flag: "🇦🇱", c1: "#dc2626", c2: "#facc15", salary: 1220 },
+        { name: "Conad Albania (Supermarket)", country: "ALB", flag: "🇦🇱", c1: "#dc2626", c2: "#ffffff", salary: 1260 },
+        { name: "Shwapno Super Shop (Dhaka)", country: "BAN", flag: "🇧🇩", c1: "#dc2626", c2: "#facc15", salary: 1020 },
+        { name: "Meena Bazar (Chittagong)", country: "BAN", flag: "🇧🇩", c1: "#16a34a", c2: "#f97316", salary: 990 }
+      ];
+
+      const ALT_NATIONALITIES_POOL = [
+        { flag: "🇧🇴", name: "Seleção da Bolívia", comp: "Eliminatórias Sul-Americanas" },
+        { flag: "🇦🇱", name: "Seleção da Albânia", comp: "Liga das Nações" },
+        { flag: "🇧🇩", name: "Seleção de Bangladesh", comp: "Copa da Ásia" },
+        { flag: "🇦🇩", name: "Seleção de Andorra", comp: "Amistoso Internacional" },
+        { flag: "🇬🇮", name: "Seleção de Gibraltar", comp: "Liga das Nações" },
+        { flag: "🇧🇭", name: "Seleção do Bahrein", comp: "Copa da Ásia" },
+        { flag: "🇲🇹", name: "Seleção de Malta", comp: "Amistoso Internacional" },
+        { flag: "🇫🇴", name: "Seleção das Ilhas Faroé", comp: "Liga das Nações" }
+      ];
+
+      const COLEGA_NAMES = [
+        "Wesley", "Kaio", "Rikelme", "Yago", "Breno", "Caíque", "Thales", "Luan", "Vitor Hugo", "Matheusinho",
+        "Pedrinho", "Dudu", "Marquinhos", "Juninho", "Gabrielzinho", "Lucas P.", "Rafael B.", "Igor", "Thiaguinho", "Murilo",
+        "Gustavo", "Bruno Henrique", "Danilo", "Felipe", "Renan", "Rodrigo", "Leandro", "Diego", "anderson", "Fabinho",
+        "Cleiton", "Weverton", "Jhonatan", "Maicon", "Wallison", "Geovane", "Kauan", "Enzo", "Cauã", "Pietro",
+        "Brayan", "Kevin", "Richard", "Patrick", "Allan", "Otávio", "Sávio", "Endrickson", "Ronyelson", "Deyverson Jr",
+        "Neto", "Zé Roberto", "Alisson", "Ederson", "Douglas", "Vinícius", "Arthur", "Paulinho", "Gerson", "Everton",
+        "Michael", "Cebolinha", "arrasca", "De La Cruz", "Piquerez", "Veiga", "Scarpa", "Hulk Jr", "Paulinho B.", "Arana",
+        "Yuri Alberto", "Garro", "Memphis Jr", "Calleri Jr", "Luciano", "Nestor", "Ferreirinha", "Tiquinho", "Luiz Henrique", "Almada"
+      ];
+
+      const RIVAL_COLEGA_CLUBS = [
+        "EC Bahia", "CR Flamengo", "SE Palmeiras", "SC Corinthians", "São Paulo FC", "Cruzeiro EC", "Atlético-MG", "Grêmio",
+        "SC Internacional", "Botafogo", "Fluminense", "Vasco da Gama", "Fortaleza EC", "Athletico-PR", "EC Vitória", "Sport Recife",
+        "Real Betis", "Sevilla FC", "Villarreal CF", "Real Sociedad", "Valencia CF", "Celta de Vigo", "Girona FC", "Athletic Bilbao",
+        "Wolverhampton", "West Ham", "Aston Villa", "Brighton", "Fulham", "Crystal Palace", "Nottingham Forest", "Brentford",
+        "SL Benfica", "FC Porto", "Sporting CP", "SC Braga", "SSC Napoli", "Atalanta", "ACF Fiorentina", "Bologna FC",
+        "River Plate", "Boca Juniors", "Racing Club", "Club América (MEX)", "Monterrey", "Al-Hilal", "Al-Nassr", "Inter Miami"
+      ];
+
+      const GENERAL_INSULTS = [
+        "porque você é pereba",
+        "porque você é muito ruim de bola",
+        "porque você é um cone em campo",
+        "porque você só apanha da bola",
+        "porque você tem dois pés esquerdos",
+        "porque você domina a bola de canela",
+        "porque você erra passe de dois metros",
+        "porque seu empresário só arruma fria",
+        "porque você cansa no aquecimento",
+        "porque a bola chora quando chega no seu pé",
+        "porque você tropeça na linha da grande área",
+        "porque até o roupeiro bate melhor na bola que você",
+        "porque você não ganha dividida nem de juvenil",
+        "porque seu chute vai parar fora do estádio",
+        "porque você só corre errado",
+        "porque tem alergia a fundamento básico",
+        "porque nem compilado de melhores momentos você tem",
+        "porque o olheiro foi embora no intervalo",
+        "porque você conseguiu ser reserva no rachão",
+        "porque você tem menos intimidade com a bola que um poste"
+      ];
+
+      const SHIRT_OCCASIONS = [
+        "Você fez dois gols sem querer batendo na canela no último jogo",
+        "Você deu uma assistência de costas sem enxergar ninguém",
+        "O titular da posição pegou caxumba antes da rodada",
+        "A camisa antiga rasgou numa dividida feia",
+        "O roupeiro perdeu sua camisa na lavanderia do clube",
+        "Você acertou um chute mascado que entrou no ângulo",
+        "A torcida inventou uma música zoando seu número atual",
+        "O patrocinador novo exigiu troca na numeração fixa",
+        "Você salvou uma bola em cima da linha sem querer",
+        "O técnico achou que seu número atual dá azar"
+      ];
+
+      const CHURCH_EVENTS = [
+        {
+          tag: "Igreja & Fé",
+          title: "Culto de Libertação na véspera do clássico",
+          desc: "O pastor chamou os atletas para receber oração antes da rodada decisiva.",
+          yesLabel: "Ir pro culto e dar testemunho no altar",
+          noLabel: "Ficar em casa descansando as pernas",
+          onYes: () => Math.random() < 0.65
+            ? { ok: true, msg: "Deu certo: você saiu renovado espiritualmente e o pastor abençoou suas chuteiras.", d: { pastor: 10, tecnico: 4 } }
+            : { ok: false, msg: "Deu errado: o culto acabou tarde e você bocejou no treino da manhã.", d: { pastor: 6, tecnico: -4 } },
+          onNo: () => ({ ok: false, msg: "O pastor sentiu sua falta no banco da frente.", d: { pastor: -8 } })
+        },
+        {
+          tag: "Dízimo & Oferta",
+          title: "Campanha de reforma do templo do bairro",
+          desc: "A igreja iniciou arrecadação para trocar o telhado e o som.",
+          yesLabel: "Contribuir fielmente com o dízimo do salário",
+          noLabel: "Segurar a grana dizendo que o clube atrasou o bicho",
+          onYes: () => ({ ok: true, msg: "Pastor elogiou sua fidelidade diante da congregação!", d: { pastor: 12, torcida: 3 } }),
+          onNo: () => ({ ok: false, msg: "O tesoureiro da igreja olhou torto na saída.", d: { pastor: -9 } })
+        },
+        {
+          tag: "Vigília",
+          title: "Vigília da Madrugada no Monte",
+          desc: "Os irmãos convidaram você para subir o monte orar pela sua carreira.",
+          yesLabel: "Subir o monte e orar até amanhecer",
+          noLabel: "Orar de casa porque tem treino físico cedo",
+          onYes: () => Math.random() < 0.55
+            ? { ok: true, msg: "Você desceu do monte voando baixo e fez uma semana impecável!", d: { pastor: 11, ovr: 1 } }
+            : { ok: false, msg: "Pegou sereno na madrugada e acordou rouco e cansado.", d: { pastor: 8, tecnico: -5 } },
+          onNo: () => ({ ok: true, msg: "Manteve a disciplina de atleta e orou antes de dormir.", d: { tecnico: 4, pastor: -2 } })
+        },
+        {
+          tag: "Vestiário Cristão",
+          title: "Roda de oração antes de entrar em campo",
+          desc: "Alguns jogadores te pediram para puxar a palavra no vestiário.",
+          yesLabel: "Puxar uma oração firme e motivadora",
+          noLabel: "Passar a vez para o capitão do time",
+          onYes: () => ({ ok: true, msg: "O elenco entrou pilhado em campo e o pastor vibrou da arquibancada!", d: { pastor: 9, time: 6 } }),
+          onNo: () => ({ ok: true, msg: "O capitão conduziu bem e o clima seguiu tranquilo.", d: { time: 2, pastor: -3 } })
+        }
+      ];
+
+      const BASE_FOOTBALL_SCENARIOS = [
+        {
+          tag: "Canela dura",
+          title: "Dominou a bola com a canela no treino",
+          desc: "A bola espirrou 3 metros e virou contra-ataque. O preparador físico colocou a mão na cabeça.",
+          yesLabel: "Culpar o gramado irregular e pedir repeteco",
+          noLabel: "Dizer que foi passe de calcanhar calculado",
+          onYes: () => Math.random() < 0.5
+            ? { ok: true, msg: "Deu certo: o gramado tava mesmo cheio de buraco e o técnico relevou.", d: { tecnico: 4, time: 2 } }
+            : { ok: false, msg: "Deu errado: o auxiliar anotou na prancheta que o domínio não sai.", d: { tecnico: -6, ovr: -1 } },
+          onNo: () => Math.random() < 0.5
+            ? { ok: true, msg: "Deu certo: o vestiário caiu na risada com a cara de pau.", d: { time: 6, torcida: 3 } }
+            : { ok: false, msg: "Deu errado: o capitão mandou parar de gracinha e correr.", d: { time: -6, pastor: -3 } }
+        },
+        {
+          tag: "Vestiário",
+          title: "Chuteira furada presa com fita isolante",
+          desc: "A sola abriu no meio da semana e o roupeiro só tem chuteira velha sobrando.",
+          yesLabel: "Passar duas voltas de fita isolante e ir pro jogo",
+          noLabel: "Pegar emprestado um par apertado do reserva",
+          onYes: () => Math.random() < 0.5
+            ? { ok: true, msg: "Deu certo: a fita aguentou firme até o apito final.", d: { torcida: 7, time: 4 } }
+            : { ok: false, msg: "Deu errado: a sola descolou no primeiro pique longo.", d: { tecnico: -5, torcida: -4 } },
+          onNo: () => Math.random() < 0.5
+            ? { ok: true, msg: "Deu certo: a chuteira encaixou bem e você arriscou um chute.", d: { time: 5, ovr: 1 } }
+            : { ok: false, msg: "Deu errado: apertou os dedos e você saiu mancando.", d: { tecnico: -4 } }
+        },
+        {
+          tag: "Altitude",
+          altitudeOnly: true,
+          title: "Partida na altitude acima de 3.600 metros",
+          desc: "No aquecimento já faltou ar e a bola parece um foguete no ar rarefeito.",
+          yesLabel: "Puxar oxigênio no tubo e segurar o ritmo no começo",
+          noLabel: "Correr no talo desde o primeiro minuto",
+          onYes: () => Math.random() < 0.55
+            ? { ok: true, msg: "Deu certo: recuperou o fôlego e aguentou bem a pressão na altitude.", d: { tecnico: 6, ovr: 1 } }
+            : { ok: false, msg: "Deu errado: deu tontura e você errou um passe curto.", d: { torcida: -6, tecnico: -5 } },
+          onNo: () => Math.random() < 0.4
+            ? { ok: true, msg: "Deu certo: surpreendeu os adversários com fôlego de sobra.", d: { torcida: 8, tecnico: 5 } }
+            : { ok: false, msg: "Deu errado: morreu sem ar aos 18 minutos do primeiro tempo.", d: { torcida: -8, tecnico: -6 } }
+        },
+        {
+          tag: "Perrengue de Viagem",
+          title: "Ônibus da delegação quebrou na estrada",
+          desc: "O calor aperta no acostamento e o elenco precisa decidir como lidar com o atraso.",
+          yesLabel: "Ajudar a empurrar e animar o grupo na resenha",
+          noLabel: "Ficar na sombra descansando as pernas",
+          onYes: () => Math.random() < 0.5
+            ? { ok: true, msg: "Deu certo: clima de união fortaleceu o grupo antes do jogo.", d: { time: 8, pastor: 3 } }
+            : { ok: false, msg: "Deu errado: cansou no sol forte e entrou pesado.", d: { tecnico: -5 } },
+          onNo: () => Math.random() < 0.5
+            ? { ok: true, msg: "Deu certo: pernas descansadas ajudaram nos minutos finais.", d: { time: 3 } }
+            : { ok: false, msg: "Deu errado: saiu foto sua moscando e pegou mal no grupo.", d: { time: -8 } }
+        },
+        {
+          tag: "Humor Perna de Pau",
+          title: "Chute torto que quase acertou a bandeirinha de escanteio",
+          desc: "A bola sobrou limpa na entrada da área e o chute foi parar na lateral.",
+          yesLabel: "Levantar o braço e culpar a bola leve",
+          noLabel: "Voltar rápido na marcação sem reclamar",
+          onYes: () => Math.random() < 0.5
+            ? { ok: true, msg: "Deu certo: ninguém levou pro lado pessoal e o jogo seguiu.", d: { torcida: 3 } }
+            : { ok: false, msg: "Deu errado: a arquibancada caçoou da sua pontaria.", d: { torcida: -8, tecnico: -4 } },
+          onNo: () => Math.random() < 0.55
+            ? { ok: true, msg: "Deu certo: compensou o chute torto com raça na marcação.", d: { tecnico: 6, time: 5 } }
+            : { ok: false, msg: "Deu errado: o banco lamentou a chance desperdiçada.", d: { tecnico: -5 } }
+        },
+        {
+          tag: "Patrocínio Local",
+          title: "Apoio da Cabeleireira Leila e comércio do bairro",
+          desc: "Comércio local oferece corte descolorido e um pequeno agrado em troca de divulgação.",
+          yesLabel: "Aceitar o apoio local e fazer o nevou",
+          noLabel: "Recusar e manter foco apenas nos treinos",
+          onYes: () => Math.random() < 0.5
+            ? { ok: true, msg: "Deu certo: visual em dia e moral com a comunidade.", d: { torcida: 7, time: 4 } }
+            : { ok: false, msg: "Deu errado: o corte ficou torto e virou meme no vestiário.", d: { time: -5, torcida: -4 } },
+          onNo: () => Math.random() < 0.55
+            ? { ok: true, msg: "Deu certo: comissão enxergou seriedade no seu foco.", d: { tecnico: 5, pastor: 3 } }
+            : { ok: false, msg: "Deu errado: perdeu um agrado simples do dia a dia.", d: { torcida: -3 } }
+        },
+        {
+          tag: "Treino Extra",
+          title: "Sessão extra de fundamentos após o treino",
+          desc: "O auxiliar técnico ficou no campo para treinar domínio, passe curto e finalização.",
+          yesLabel: "Ficar 40 minutos treinando fundamento",
+          noLabel: "Ir direto pro vestiário jogar dominó",
+          onYes: () => Math.random() < 0.65
+            ? { ok: true, msg: "Deu certo: o treino repetitivo melhorou sua técnica e seu OVR!", d: { tecnico: 7, ovr: 1 } }
+            : { ok: false, msg: "Deu errado: forçou demais e sentiu leve fisgada na panturrilha.", d: { tecnico: -3 } },
+          onNo: () => Math.random() < 0.5
+            ? { ok: true, msg: "Deu certo: ganhou moral na resenha do vestiário.", d: { time: 5, tecnico: -3 } }
+            : { ok: false, msg: "Deu errado: o técnico viu você saindo cedo e fechou a cara.", d: { tecnico: -7 } }
+        }
+      ];
+
+      const BASE_WORK_SCENARIOS = [
+        {
+          tag: "Firma / Estoque",
+          title: "Carga pesada de fardos no horário da rodada",
+          desc: "Sem clube no momento, o turno exige braço enquanto toca futebol no rádio do galpão.",
+          yesLabel: "Segurar a bronca e bater a meta do turno",
+          noLabel: "Pedir troca para conferir etiquetas no caixa",
+          onYes: () => Math.random() < 0.6
+            ? { ok: true, msg: "Deu certo: o gerente elogiou sua disposição no estoque!", d: { jobPoints: 12, vontadeFutebol: 15 } }
+            : { ok: false, msg: "Deu errado: dor nas costas e muita saudade do gramado.", d: { jobPoints: 4, vontadeFutebol: 24 } },
+          onNo: () => Math.random() < 0.5
+            ? { ok: true, msg: "Deu certo: conseguiu um posto mais tranquilo no turno.", d: { jobPoints: 6, vontadeFutebol: 12 } }
+            : { ok: false, msg: "Deu errado: gerou atrito com o encarregado do setor.", d: { jobPoints: -6, vontadeFutebol: 20 } }
+        },
+        {
+          tag: "Várzea / Bico",
+          title: "Rachão no terrão valendo um troco no domingo",
+          desc: "Convidaram você para reforçar o time da rua no campeonato amador.",
+          yesLabel: "Ir pro jogo mostrar serviço na bola",
+          noLabel: "Descansar para chegar inteiro na segunda-feira",
+          onYes: () => Math.random() < 0.55
+            ? { ok: true, msg: "Deu certo: você jogou bem no terrão e reacendeu a chama da bola!", d: { torcida: 7, ovr: 1, vontadeFutebol: 28 } }
+            : { ok: false, msg: "Deu errado: ralou o joelho no cascalho e mancou no trabalho.", d: { jobPoints: -5, vontadeFutebol: 18 } },
+          onNo: () => ({ ok: true, msg: "Você descansou bem e chegou pontual no expediente.", d: { jobPoints: 10, vontadeFutebol: 8 } })
+        },
+        {
+          tag: "Atendimento",
+          title: "Fila gigante no caixa em véspera de feriado",
+          desc: "Cliente reclamando do preço enquanto você pensa se ainda dá tempo de voltar a jogar.",
+          yesLabel: "Atender com paciência e agilidade",
+          noLabel: "Responder seco na hora da pressão",
+          onYes: () => ({ ok: true, msg: "Você resolveu o problema rápido e ganhou pontos com a gerência!", d: { jobPoints: 12, pastor: 4, vontadeFutebol: 14 } }),
+          onNo: () => ({ ok: false, msg: "Levou advertência verbal do supervisor.", d: { jobPoints: -8, vontadeFutebol: 25 } })
+        }
+      ];
+
+      function buildExpandedCatalog(bases, prefix) {
+        const twists = [
+          "na chuva fina da tarde",
+          "sob sol forte do meio-dia",
+          "diante de olheiro local",
+          "com piso escorregadio",
+          "na véspera de fim de semana",
+          "após semana puxada",
+          "com movimento intenso",
+          "longe de casa",
+          "sob pressão da galera",
+          "no apagar das luzes"
+        ];
+        const list = [];
+        let idx = 1;
+        for (const base of bases) {
+          list.push(Object.assign({}, base, { id: prefix + "_base_" + (idx++), baseKey: base.title }));
+          for (const tw of twists) {
+            list.push(Object.assign({}, base, {
+              title: base.title + " (" + tw + ")",
+              desc: base.desc + " Situação ocorrida " + tw + ".",
+              id: prefix + "_" + (idx++),
+              baseKey: base.title
+            }));
+          }
+        }
+        return list;
+      }
+
+      const FOOTBALL_EVENTS_CATALOG = buildExpandedCatalog(BASE_FOOTBALL_SCENARIOS, "fb");
+      const WORK_EVENTS_CATALOG = buildExpandedCatalog(BASE_WORK_SCENARIOS, "wk");
+
+      const state = {
+        mode: "normal",
+        name: "Bagre da Vila",
+        age: 16,
+        nationality: NATIONALITIES[0],
+        position: POSITIONS[7], // CA
+        style: STYLES[0],
+        shirtNumber: 83,
+        ovr: 31,
+        season: 1,
+        step: 0,
+        eventsPerSeason: 4,
+        moral: { pastor: 50, torcida: 50, tecnico: 50, time: 50 },
+        contract: null,
+        jobPoints: 0,
+        vontadeFutebol: 50,
+        nationalTeamName: "Seleção Brasileira",
+        nationalTeamFlag: "🇧🇷",
+        isTop20NationalTeam: true,
+        isNaturalized: false,
+        altWorldCupShowcase: false,
+        selecaoCaps: 0,
+        stats: { games: 0, goals: 0, assists: 0, yellows: 0, reds: 0 },
+        seasonStats: { games: 0, goals: 0, assists: 0, yellows: 0, reds: 0 },
+        titles: [],
+        history: [],
+        usedEventIds: new Set(),
+        recentBaseKeys: [],
+        fbDeck: [],
+        wkDeck: [],
+        churchDeck: [],
+        selectedModeId: "normal",
+        selectedNatId: "BRA",
+        selectedPosId: "CA",
+        selectedStyleId: "farrista",
+        startPool: [],
+        selectedStartIdx: 0,
+        currentEvent: null
+      };
+
+      let usedColegaQueue = [];
+
+      const clamp = (val, min, max) => Math.max(min, Math.min(max, val));
+      const pickRandom = (arr) => arr[Math.floor(Math.random() * arr.length)];
+      const shuffle = (arr) => {
+        const copy = [...arr];
+        for (let i = copy.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [copy[i], copy[j]] = [copy[j], copy[i]];
+        }
+        return copy;
+      };
+
+      function formatMoney(val) {
+        return "R$ " + Number(val).toLocaleString("pt-BR");
+      }
+
+      function getNextColega() {
+        if (usedColegaQueue.length === 0) {
+          usedColegaQueue = shuffle(COLEGA_NAMES);
+        }
+        return usedColegaQueue.pop();
+      }
+
+      function getContextualInsult() {
+        const pool = [...GENERAL_INSULTS, ...(state.position.insults || [])];
+        return pickRandom(pool);
+      }
+
+      function showScreen(id) {
+        document.querySelectorAll(".screen").forEach((s) => s.classList.remove("active"));
+        document.getElementById(id).classList.add("active");
+      }
+
+      function renderModeSelector() {
+        const container = document.getElementById("modeSelector");
+        container.innerHTML = GAME_MODES.map((m) => `
+          <button type="button" class="mode-card ${m.id === state.selectedModeId ? "selected" : ""}" data-mode="${m.id}">
+            <div>
+              <div class="mode-title">${m.label}</div>
+              <div class="mode-desc">${m.desc}</div>
+            </div>
+            <span style="font-weight:900; color:${m.id === state.selectedModeId ? "#4ade80" : "#64748b"};">
+              ${m.id === state.selectedModeId ? "●" : "○"}
+            </span>
+          </button>
+        `).join("");
+
+        container.querySelectorAll(".mode-card").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            state.selectedModeId = btn.dataset.mode;
+            renderModeSelector();
+          });
+        });
+      }
+
+      function generateStartOptionsForNationality(natId) {
+        const localClubs = TIER0_CLUBS.filter((c) => c.country === natId);
+        const fallbackClubs = TIER0_CLUBS.filter((c) => c.country !== natId);
+        const clubPool = localClubs.length >= 2 ? shuffle(localClubs) : [...shuffle(localClubs), ...shuffle(fallbackClubs)];
+
+        const localJobs = JOBS_POOL.filter((j) => j.country === natId);
+        const fallbackJobs = JOBS_POOL.filter((j) => j.country !== natId);
+        const jobPool = localJobs.length >= 2 ? shuffle(localJobs) : [...shuffle(localJobs), ...shuffle(fallbackJobs)];
+
+        const cA = clubPool[0];
+        const cB = clubPool[1];
+        const jA = jobPool[0];
+        const jB = jobPool[1];
+
+        state.startPool = [
+          {
+            label: `${cA.flag} ${cA.name}`,
+            sub: `Futebol • ${formatMoney(cA.salary)}/mês • ${cA.teams} times`,
+            data: Object.assign({ type: "club", pos: Math.max(2, cA.teams - 2) }, cA)
+          },
+          {
+            label: `${cB.flag} ${cB.name}`,
+            sub: `Futebol • ${formatMoney(cB.salary)}/mês • ${cB.teams} times`,
+            data: Object.assign({ type: "club", pos: Math.max(2, cB.teams - 3) }, cB)
+          },
+          {
+            label: `${jA.flag} ${jA.name}`,
+            sub: `CLT / Emprego • ${formatMoney(jA.salary)}/mês • Sem clube`,
+            data: Object.assign({ type: "job", tier: "job", teams: null, pos: null, rankTitle: "Aprendiz" }, jA)
+          },
+          {
+            label: `${jB.flag} ${jB.name}`,
+            sub: `CLT / Emprego • ${formatMoney(jB.salary)}/mês • Sem clube`,
+            data: Object.assign({ type: "job", tier: "job", teams: null, pos: null, rankTitle: "Auxiliar" }, jB)
+          }
+        ];
+        state.selectedStartIdx = 0;
+      }
+
+      function renderSetupOptions() {
+        const natSelect = document.getElementById("selectNationality");
+        natSelect.innerHTML = NATIONALITIES.map((n) => `
+          <option value="${n.id}" ${n.id === state.selectedNatId ? "selected" : ""}>${n.flag} ${n.name}</option>
+        `).join("");
+
+        const pitchWrap = document.getElementById("positionPitchWrap");
+        const selectedPosObj = POSITIONS.find((p) => p.id === state.selectedPosId) || POSITIONS[7];
+        pitchWrap.innerHTML = `
+          <div class="pitch-board">
+            <svg class="pitch-lines" viewBox="0 0 310 205" fill="none">
+              <rect x="8" y="8" width="294" height="189" rx="8" stroke="rgba(255,255,255,0.45)" stroke-width="1.5" />
+              <line x1="8" y1="102.5" x2="302" y2="102.5" stroke="rgba(255,255,255,0.45)" stroke-width="1.5" />
+              <circle cx="155" cy="102.5" r="26" stroke="rgba(255,255,255,0.45)" stroke-width="1.5" />
+              <rect x="88" y="8" width="134" height="34" stroke="rgba(255,255,255,0.45)" stroke-width="1.5" />
+              <rect x="88" y="163" width="134" height="34" stroke="rgba(255,255,255,0.45)" stroke-width="1.5" />
+            </svg>
+            ${POSITIONS.map((p) => `
+              <button type="button"
+                class="pos-node ${p.id === state.selectedPosId ? "selected" : ""}"
+                style="left:${p.x}%; top:${p.y}%;"
+                data-pos="${p.id}"
+                title="${p.label}">${p.id}</button>
+            `).join("")}
+          </div>
+          <div class="pos-caption">${selectedPosObj.label} — ${selectedPosObj.desc}</div>
+        `;
+
+        pitchWrap.querySelectorAll(".pos-node").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            state.selectedPosId = btn.dataset.pos;
+            renderSetupOptions();
+          });
+        });
+
+        const styleContainer = document.getElementById("styleOptions");
+        styleContainer.innerHTML = STYLES.map((st) => `
+          <button type="button" class="option-btn ${st.id === state.selectedStyleId ? "selected" : ""}" data-style="${st.id}">
+            <div>
+              <div class="opt-main">${st.label}</div>
+              <div class="opt-sub">${st.desc}</div>
+            </div>
+          </button>
+        `).join("");
+
+        styleContainer.querySelectorAll(".option-btn").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            state.selectedStyleId = btn.dataset.style;
+            renderSetupOptions();
+          });
+        });
+
+        const startContainer = document.getElementById("startOptions");
+        startContainer.innerHTML = state.startPool.map((sc, idx) => `
+          <button type="button" class="option-btn ${idx === state.selectedStartIdx ? "selected" : ""}" data-start-idx="${idx}">
+            <div>
+              <div class="opt-main">${sc.label}</div>
+              <div class="opt-sub">${sc.sub}</div>
+            </div>
+          </button>
+        `).join("");
+
+        startContainer.querySelectorAll(".option-btn").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            state.selectedStartIdx = Number(btn.dataset.startIdx);
+            renderSetupOptions();
+          });
+        });
+      }
+
+      function simulateMatchSlice(gamesCount = 9) {
+        if (state.contract.type !== "club") return;
+        const pos = state.position;
+        const ovrFactor = clamp((state.ovr - 25) / 60, 0.2, 1.35);
+
+        let g = 0;
+        let a = 0;
+        let y = 0;
+        let r = 0;
+
+        for (let i = 0; i < gamesCount; i++) {
+          if (Math.random() < pos.goalChance * ovrFactor) g++;
+          if (Math.random() < pos.assistChance * ovrFactor) a++;
+          if (Math.random() < pos.cardChance) y++;
+          if (Math.random() < pos.cardChance * 0.12) r++;
+        }
+
+        state.stats.games += gamesCount;
+        state.stats.goals += g;
+        state.stats.assists += a;
+        state.stats.yellows += y;
+        state.stats.reds += r;
+
+        state.seasonStats.games += gamesCount;
+        state.seasonStats.goals += g;
+        state.seasonStats.assists += a;
+        state.seasonStats.yellows += y;
+        state.seasonStats.reds += r;
+      }
+
+      function drawNonRepeatingEvent(deckName, catalog, filterFn = null) {
+        if (state[deckName].length === 0) {
+          state[deckName] = shuffle(catalog);
+        }
+
+        let candidate = null;
+        for (let i = state[deckName].length - 1; i >= 0; i--) {
+          const ev = state[deckName][i];
+          if (filterFn && !filterFn(ev)) continue;
+          if (!state.usedEventIds.has(ev.id) && !state.recentBaseKeys.includes(ev.baseKey)) {
+            candidate = state[deckName].splice(i, 1)[0];
+            break;
+          }
+        }
+
+        if (!candidate) {
+          state.usedEventIds.clear();
+          state[deckName] = shuffle(catalog);
+          for (let i = state[deckName].length - 1; i >= 0; i--) {
+            const ev = state[deckName][i];
+            if (!filterFn || filterFn(ev)) {
+              candidate = state[deckName].splice(i, 1)[0];
+              break;
+            }
+          }
+        }
+
+        if (!candidate) {
+          candidate = pickRandom(catalog);
+        }
+
+        state.usedEventIds.add(candidate.id);
+        state.recentBaseKeys.push(candidate.baseKey);
+        if (state.recentBaseKeys.length > 9) state.recentBaseKeys.shift();
+        return candidate;
+      }
+
+      function drawEvent() {
+        // 1. Eventos exclusivos de igreja para estilo Crente
+        if (state.style.id === "crente" && Math.random() < 0.28) {
+          return drawNonRepeatingEvent("churchDeck", CHURCH_EVENTS);
+        }
+
+        // 2. Se estiver em clube: chance de convocação para seleção (Top 20 ou Alternativa com classificação inédita)
+        const canBeCalledUp = state.contract.type === "club" && (
+          (!state.isTop20NationalTeam && state.ovr >= 46) ||
+          (state.isTop20NationalTeam && (state.contract.tier >= 2 || state.ovr >= 66))
+        );
+
+        if (canBeCalledUp && Math.random() < 0.30) {
           const teamLabel = state.nationalTeamName;
           const canWinWorldCup = state.isTop20NationalTeam && (state.contract.tier === 3 || state.ovr >= 78);
-          const isAltWorldCup = !state.isTop20NationalTeam && (state.season % 2 === 0 || Math.random() < 0.35);
+          const isAltWorldCup = !state.isTop20NationalTeam && (state.season % 2 === 0 || Math.random() < 0.38);
           const isWorldCup = state.season % 2 === 0 && canWinWorldCup;
 
           if (isAltWorldCup) {
@@ -11,7 +1891,7 @@
             const wcQualTitle = `Classificação Inédita para a Copa (${teamLabel})`;
 
             return {
-              tag: `${teamLabel} • Eliminatórias / Copa do Mundo`,
+              tag: `${state.nationalTeamFlag} ${teamLabel} • Copa do Mundo`,
               title: `Histórico! ${teamLabel} na Copa do Mundo!`,
               desc: `Você ajudou ${teamLabel} a conseguir uma classificação inédita para a Copa do Mundo! No torneio a seleção foi o saco de pancadas do grupo (levando goleadas), mas você apareceu na vitrine mundial!`,
               yesLabel: "Dar carrinho na bandeirinha e honrar a camisa na goleada",
@@ -46,12 +1926,181 @@
           const winAchievement = isFriendly
             ? `Vitória Histórica em ${compName} (${teamLabel})`
             : `Campeão da ${compName} (${teamLabel})`;
-<!-- ... existing code ... -->
-        isTop20NationalTeam: true,
-        isNaturalized: false,
-        altWorldCupShowcase: false,
-        stats: {
-<!-- ... existing code ... -->
+
+          state.selecaoCaps += 2;
+          state.stats.games += 2;
+          state.seasonStats.games += 2;
+
+          return {
+            tag: `${state.nationalTeamFlag} ${teamLabel} • ${compName}`,
+            title: `Convocado para defender ${teamLabel}!`,
+            desc: `Você foi chamado para disputar ${compName} pela ${teamLabel}. Como encaras a responsabilidade?`,
+            yesLabel: "Entrar com sangue nos olhos e decidir o jogo",
+            noLabel: "Jogar simples para não comprometer o esquema",
+            onYes: () => {
+              if (Math.random() < 0.55) {
+                if (!state.titles.includes(winAchievement)) state.titles.push(winAchievement);
+                return {
+                  ok: true,
+                  msg: `Brilhou pela seleção! Conquista desbloqueada: ${winAchievement}!`,
+                  d: { torcida: 15, tecnico: 8, ovr: 2 }
+                };
+              }
+              return {
+                ok: false,
+                msg: `Você se afobou no lance decisivo e a imprensa pegou no seu pé.`,
+                d: { torcida: -8, tecnico: -5 }
+              };
+            },
+            onNo: () => ({
+              ok: true,
+              msg: `Fez o feijão com arroz sem comprometer e somou partidas internacionais.`,
+              d: { tecnico: 4, time: 4 }
+            })
+          };
+        }
+
+        // 3. Proposta de naturalização em ligas alternativas
+        if (
+          state.contract.type === "club" &&
+          !state.isNaturalized &&
+          state.ovr >= 48 &&
+          Math.random() < 0.14
+        ) {
+          const altNat = pickRandom(ALT_NATIONALITIES_POOL);
+          return {
+            tag: `${altNat.flag} Naturalização`,
+            title: `Convite para se naturalizar por ${altNat.name}!`,
+            desc: `A federação local gostou da sua raça e ofereceu passaporte para defender ${altNat.name} nas eliminatórias e na ${altNat.comp}.`,
+            yesLabel: `Aceitar cidadania e jogar por ${altNat.name}`,
+            noLabel: `Recusar e manter sonho pela ${state.nationality.team}`,
+            onYes: () => {
+              state.isNaturalized = true;
+              state.isTop20NationalTeam = false;
+              state.nationalTeamName = altNat.name;
+              state.nationalTeamFlag = altNat.flag;
+              state.nationalTeamComp = altNat.comp;
+              return {
+                ok: true,
+                msg: `Agora você é internacional por ${altNat.flag} ${altNat.name}! Pode até buscar uma classificação inédita para a Copa!`,
+                d: { torcida: 8, ovr: 1 }
+              };
+            },
+            onNo: () => ({
+              ok: true,
+              msg: `Você recusou a naturalização e seguiu fiel ao seu país de origem.`,
+              d: { torcida: 5 }
+            })
+          };
+        }
+
+        // 4. Troca de número de camisa quando se destaca
+        if (
+          state.contract.type === "club" &&
+          state.moral.tecnico >= 58 &&
+          Math.random() < 0.16
+        ) {
+          const occasion = pickRandom(SHIRT_OCCASIONS);
+          const optA = pickRandom([7, 9, 10, 11, 17, 19]);
+          const optB = pickRandom([22, 27, 33, 77, 99]);
+          return {
+            tag: "👕 Numeração",
+            title: "O técnico quer trocar o número da sua camisa!",
+            desc: `${occasion}. O treinador chamou você para escolher uma nova numeração no elenco:`,
+            yesLabel: `Escolher a camisa #${optA} (moral de titular)`,
+            noLabel: `Escolher a camisa #${optB} ou manter a #${state.shirtNumber}`,
+            thirdLabel: `Responder: "Professor, não precisa, a camisa nem tá suja!"`,
+            onYes: () => {
+              state.shirtNumber = optA;
+              return { ok: true, msg: `Você assumiu a #${optA} com moral no vestiário!`, d: { torcida: 8, tecnico: 5 } };
+            },
+            onNo: () => {
+              state.shirtNumber = optB;
+              return { ok: true, msg: `Você pegou a #${optB} na humildade e agradou o grupo.`, d: { time: 6, tecnico: 3 } };
+            },
+            onThird: () => ({
+              ok: false,
+              msg: `Você não entendeu o que o técnico falou! O vestiário inteiro chorou de rir da sua burrice.`,
+              d: { time: 10, tecnico: -6 }
+            })
+          };
+        }
+
+        // 5. Aumento ou redução salarial no meio da temporada
+        if (state.contract.type === "club" && Math.random() < 0.14) {
+          const isRaise = state.moral.tecnico >= 56;
+          if (isRaise) {
+            const newSalary = Math.round(state.contract.salary * 1.25);
+            return {
+              tag: "💰 Diretoria",
+              title: "Proposta de reajuste salarial!",
+              desc: `A diretoria do ${state.contract.name} reconheceu sua entrega e ofereceu aumentar seu salário para ${formatMoney(newSalary)}/mês.`,
+              yesLabel: `Assinar aumento (${formatMoney(newSalary)}/mês)`,
+              noLabel: "Pedir bicho por vitória em vez de aumento",
+              onYes: () => {
+                state.contract.salary = newSalary;
+                return { ok: true, msg: `Salário reajustado para ${formatMoney(newSalary)}/mês!`, d: { time: 4, tecnico: 4 } };
+              },
+              onNo: () => ({
+                ok: true,
+                msg: "A diretoria gostou da sua confiança no grupo.",
+                d: { time: 7 }
+              })
+            };
+          } else {
+            const cutSalary = Math.max(500, Math.round(state.contract.salary * 0.8));
+            return {
+              tag: "📉 Crise Financeira",
+              title: "Diretoria pede redução salarial",
+              desc: `Com a fase ruim, o clube propôs reduzir seu salário para ${formatMoney(cutSalary)}/mês para evitar atrasos.`,
+              yesLabel: `Aceitar redução (${formatMoney(cutSalary)}/mês)`,
+              noLabel: "Bater o pé e exigir o contrato integral",
+              onYes: () => {
+                state.contract.salary = cutSalary;
+                return { ok: true, msg: "Você aceitou a redução e virou exemplo de comprometimento.", d: { torcida: 8, tecnico: 6 } };
+              },
+              onNo: () => ({
+                ok: false,
+                msg: "Você manteve o salário, mas ficou visado pela diretoria e torcida.",
+                d: { torcida: -8, tecnico: -6 }
+              })
+            };
+          }
+        }
+
+        // 6. Eventos normais de futebol ou trabalho CLT (estritamente separados!)
+        if (state.contract.type === "job") {
+          return drawNonRepeatingEvent("wkDeck", WORK_EVENTS_CATALOG);
+        } else {
+          const clubCountry = state.contract.country || "BRA";
+          const natInfo = NATIONALITIES.find((n) => n.id === clubCountry);
+          const hasAltitude = Boolean(natInfo && natInfo.altitude);
+          return drawNonRepeatingEvent("fbDeck", FOOTBALL_EVENTS_CATALOG, (ev) => {
+            if (ev.altitudeOnly && !hasAltitude) return false;
+            return true;
+          });
+        }
+      }
+
+      function applyOutcome(res) {
+        const d = res.d || {};
+        const mod = state.style.mod || {};
+
+        state.moral.pastor = clamp(state.moral.pastor + (d.pastor || 0) + (d.pastor ? (mod.pastor || 0) : 0), 0, 100);
+        state.moral.torcida = clamp(state.moral.torcida + (d.torcida || 0) + (d.torcida ? (mod.torcida || 0) : 0), 0, 100);
+        state.moral.tecnico = clamp(state.moral.tecnico + (d.tecnico || 0) + (d.tecnico ? (mod.tecnico || 0) : 0), 0, 100);
+        state.moral.time = clamp(state.moral.time + (d.time || 0) + (d.time ? (mod.time || 0) : 0), 0, 100);
+
+        if (d.ovr) state.ovr = clamp(state.ovr + d.ovr, 25, 99);
+        if (d.vontadeFutebol) state.vontadeFutebol = clamp(state.vontadeFutebol + d.vontadeFutebol, 0, 100);
+        if (d.jobPoints) state.jobPoints = Math.max(0, state.jobPoints + d.jobPoints);
+
+        if (state.contract.type === "club" && state.contract.pos) {
+          const shift = res.ok ? -1 : 1;
+          state.contract.pos = clamp(state.contract.pos + shift, 1, state.contract.teams);
+        }
+      }
+
       function buildSeasonReviewCard() {
         const s = state.season;
         const c = state.contract;
@@ -63,7 +2112,7 @@
         const tier2Chance = showcaseActive ? 0.10 : 0.05;
         const showcaseTag = showcaseActive ? " • 🌟 Vitrine da Copa!" : "";
 
-        // Registrar histórico da temporada na tabela
+        // Registrar histórico da temporada
         state.history.push({
           season: s,
           age: state.age,
@@ -77,22 +2126,56 @@
           info: c.type === "club" ? `${c.pos}º/${c.teams}` : `${c.rankTitle}`
         });
 
-        // Caso 1: Jogador está trabalhando CLT
+        // Caso 1: Trabalhando CLT
         if (c.type === "job") {
-<!-- ... existing code ... -->
-        // Caso 2: Jogador está na Várzea / Divisão Inferior (Tier 0)
+          const promoted = state.jobPoints >= 20;
+          if (promoted) {
+            state.jobPoints = 0;
+            c.salary = Math.round(c.salary * 1.22);
+            c.rankTitle = c.rankTitle === "Aprendiz" ? "Encarregado" : "Gerente de Loja";
+          }
+          const clubOffer = pickRandom(TIER0_CLUBS);
+          return {
+            tag: `Balanço Temporada ${s} • Carreira CLT`,
+            title: promoted
+              ? `Promoção na firma! Você virou ${c.rankTitle}!`
+              : `Fim de ano no ${c.flag} ${c.name}`,
+            desc: `Seu salário atual é ${formatMoney(c.salary)}/mês. Enquanto isso, ${colleague} foi contratado pelo ${rivalClub} e você não, ${insult}. Surgiu uma peneira no ${clubOffer.flag} ${clubOffer.name} (${formatMoney(clubOffer.salary)}/mês).`,
+            yesLabel: `Largar a firma e assinar com ${clubOffer.flag} ${clubOffer.name}`,
+            noLabel: `Continuar firme no ${c.flag} ${c.name} (${formatMoney(c.salary)}/mês)`,
+            onYes: () => {
+              state.contract = Object.assign({ type: "club", pos: clubOffer.teams - 2 }, clubOffer);
+              return { ok: true, msg: `De volta aos gramados pelo ${clubOffer.flag} ${clubOffer.name}!`, d: { torcida: 6 } };
+            },
+            onNo: () => ({
+              ok: true,
+              msg: `Você optou pela estabilidade da carteira assinada no ${c.name}!`,
+              d: { pastor: 5 }
+            })
+          };
+        }
+
+        // Verificar título nacional se terminou em 1º lugar
+        let titleWonText = "";
+        if (c.pos === 1) {
+          const trophy = `Campeão (${c.name} - Temp. ${s})`;
+          state.titles.push(trophy);
+          titleWonText = ` 🏆 VOCÊ FOI CAMPEÃO COM O ${c.name.toUpperCase()}!`;
+        }
+
+        // Caso 2: Várzea / Divisão Inferior (Tier 0)
         if (c.tier === 0) {
           const goodSeason = (state.moral.tecnico >= 52 && state.moral.torcida >= 48) || state.ovr >= 42 || showcaseActive;
           const roll = Math.random();
 
-          // Salto direto pela vitrine da Copa Alternativa (10/100 para Gigantes ou 40/100 para Série B)
+          // Salto direto pela vitrine da Copa Alternativa (10/100 para Gigantes)
           if (showcaseActive && roll < tier2Chance) {
             const topClub = pickRandom(TIER2_CLUBS);
             state.altWorldCupShowcase = false;
             return {
               tag: `Balanço Temporada ${s} • 🌟 Vitrine da Copa`,
               title: `Gigante ${topClub.flag} ${topClub.name} te contratou após a Copa!`,
-              desc: `Mesmo sendo saco de pancadas na Copa, você chamou atenção mundial (chance 10/100)! ${colleague} foi para o ${rivalClub} e você fechou com ${topClub.flag} ${topClub.name} (${formatMoney(topClub.salary)}/mês).`,
+              desc: `Mesmo sendo saco de pancadas na Copa, você chamou atenção mundial (chance 10/100)! ${colleague} foi para o ${rivalClub} e você fechou com ${topClub.flag} ${topClub.name} (${formatMoney(topClub.salary)}/mês).${titleWonText}`,
               yesLabel: `Assinar com ${topClub.flag} ${topClub.name}`,
               noLabel: `Recusar e seguir no ${c.name}`,
               onYes: () => {
@@ -103,13 +2186,14 @@
             };
           }
 
+          // Salto para Série B / Championship (20/100 normal ou 40/100 com vitrine da Copa)
           if (goodSeason && roll < tier1Chance) {
             const nextClub = pickRandom(TIER1_CLUBS);
             state.altWorldCupShowcase = false;
             return {
               tag: `Balanço Temporada ${s} • Acesso (${Math.round(tier1Chance * 100)}/100)${showcaseTag}`,
               title: `Proposta de Série B / Championship!`,
-              desc: `${colleague} foi comprado pelo ${rivalClub}, mas você surpreendeu (${Math.round(tier1Chance * 100)}/100)${showcaseActive ? " graças à vitrine na Copa do Mundo" : ""}! Proposta do ${nextClub.flag} ${nextClub.name} (${formatMoney(nextClub.salary)}/mês).`,
+              desc: `${colleague} foi comprado pelo ${rivalClub}, mas você surpreendeu (${Math.round(tier1Chance * 100)}/100)${showcaseActive ? " graças à vitrine na Copa do Mundo" : ""}! Proposta do ${nextClub.flag} ${nextClub.name} (${formatMoney(nextClub.salary)}/mês).${titleWonText}`,
               yesLabel: `Assinar com ${nextClub.flag} ${nextClub.name}`,
               noLabel: `Recusar e ficar no ${c.name}`,
               onYes: () => {
@@ -119,20 +2203,58 @@
               onNo: () => ({ ok: true, msg: `Você recusou a proposta e virou ídolo local.`, d: { torcida: 12, time: 6 } })
             };
           }
-<!-- ... existing code ... -->
-        // Caso 3: Jogador está na Série B / Championship / Segunda (Tier 1)
+
+          // Má fase na várzea -> oferta de emprego CLT ou outro clube pequeno
+          if (state.moral.tecnico < 42) {
+            const job = pickRandom(JOBS_POOL);
+            const otherLow = pickRandom(TIER0_CLUBS);
+            return {
+              tag: `Balanço Temporada ${s} • Dispensa`,
+              title: `O ${c.name} não renovou seu contrato!`,
+              desc: `O jogador ${colleague} foi comprado pelo ${rivalClub} e você foi dispensado ${insult}.${titleWonText}`,
+              yesLabel: `Aceitar emprego CLT: ${job.flag} ${job.name} (${formatMoney(job.salary)}/mês)`,
+              noLabel: `Tentar a sorte no ${otherLow.flag} ${otherLow.name} (${formatMoney(otherLow.salary)}/mês)`,
+              onYes: () => {
+                state.contract = Object.assign({ type: "job", tier: "job", teams: null, pos: null, rankTitle: "Aprendiz" }, job);
+                state.moral.tecnico = 50;
+                return { ok: false, msg: `Fim da linha no clube. Agora você bate ponto no ${job.flag} ${job.name}.`, d: {} };
+              },
+              onNo: () => {
+                state.contract = Object.assign({ type: "club", pos: otherLow.teams - 2 }, otherLow);
+                state.moral.tecnico = 48;
+                return { ok: true, msg: `Você fechou contrato modesto com o ${otherLow.flag} ${otherLow.name}.`, d: {} };
+              }
+            };
+          }
+
+          const lateralClub = pickRandom(TIER0_CLUBS.filter((x) => x.name !== c.name));
+          return {
+            tag: `Balanço Temporada ${s} • Mercado`,
+            title: `Janela de transferências da várzea / acesso`,
+            desc: `O jogador ${colleague} foi comprado pelo ${rivalClub} e você não, ${insult}.${titleWonText}`,
+            yesLabel: `Mudar para ${lateralClub.flag} ${lateralClub.name} (${formatMoney(lateralClub.salary)}/mês)`,
+            noLabel: `Renovar por mais um ano no ${c.flag} ${c.name}`,
+            onYes: () => {
+              state.contract = Object.assign({ type: "club", pos: lateralClub.teams - 3 }, lateralClub);
+              return { ok: true, msg: `Novo ciclo iniciado no ${lateralClub.flag} ${lateralClub.name}!`, d: { time: 4 } };
+            },
+            onNo: () => ({ ok: true, msg: `Contrato renovado com o ${c.name}.`, d: { torcida: 5, time: 4 } })
+          };
+        }
+
+        // Caso 3: Série B / Championship / Segunda (Tier 1)
         if (c.tier === 1) {
           const goodSeason = state.moral.tecnico >= 58 && state.ovr >= 54;
           const roll = Math.random();
 
-          // Chance 10/100 de dar certo e ir para a Série A / Gigante (ou 40/100 de outra proposta forte de Série B)
-          if ((goodSeason || showcaseActive) && roll < (showcaseActive ? 0.10 : 0.10)) {
+          // Chance 10/100 de chegar na Série A / Grande Clube
+          if ((goodSeason || showcaseActive) && roll < 0.10) {
             const topClub = pickRandom(TIER2_CLUBS);
             state.altWorldCupShowcase = false;
             return {
               tag: `Balanço Temporada ${s} • Elite (10/100)${showcaseTag}`,
               title: `Proposta da Série A / Grande Clube!`,
-              desc: `Você contrariou as estatísticas (10/100)${showcaseActive ? " impulsionado pela Copa do Mundo" : ""}! Enquanto ${colleague} fechou com o ${rivalClub}, o ${topClub.flag} ${topClub.name} ofereceu ${formatMoney(topClub.salary)}/mês!`,
+              desc: `Você contrariou as estatísticas (10/100)${showcaseActive ? " impulsionado pela Copa do Mundo" : ""}! Enquanto ${colleague} fechou com o ${rivalClub}, o ${topClub.flag} ${topClub.name} ofereceu ${formatMoney(topClub.salary)}/mês!${titleWonText}`,
               yesLabel: `Fechar com ${topClub.flag} ${topClub.name}`,
               noLabel: `Permanecer no ${c.name}`,
               onYes: () => {
@@ -142,9 +2264,467 @@
               onNo: () => ({ ok: true, msg: `Você recusou a Série A para ficar no ${c.name}.`, d: { torcida: 10 } })
             };
           }
-<!-- ... existing code ... -->
+
+          // Regressão se foi mal
+          if (state.moral.tecnico < 42) {
+            const dropClub = pickRandom(TIER0_CLUBS);
+            return {
+              tag: `Balanço Temporada ${s} • Rebaixado / Dispensado`,
+              title: `Você não segurou a bronca na ${c.name}!`,
+              desc: `${colleague} foi comprado pelo ${rivalClub} e você voltou pro futebol fraco ${insult}.${titleWonText}`,
+              yesLabel: `Aceitar proposta do ${dropClub.flag} ${dropClub.name}`,
+              noLabel: `Tentar vaga no ${dropClub.flag} ${dropClub.name}`,
+              onYes: () => {
+                state.contract = Object.assign({ type: "club", pos: dropClub.teams - 2 }, dropClub);
+                state.moral.tecnico = 50;
+                return { ok: false, msg: `De volta às divisões inferiores pelo ${dropClub.flag} ${dropClub.name}.`, d: { ovr: -1 } };
+              },
+              onNo: () => {
+                state.contract = Object.assign({ type: "club", pos: dropClub.teams - 2 }, dropClub);
+                state.moral.tecnico = 50;
+                return { ok: false, msg: `Sem outras propostas, você assinou com o ${dropClub.flag} ${dropClub.name}.`, d: { ovr: -1 } };
+              }
+            };
+          }
+
+          const sameTierClub = pickRandom(TIER1_CLUBS.filter((x) => x.name !== c.name));
+          return {
+            tag: `Balanço Temporada ${s} • Mercado`,
+            title: `Estável na segunda divisão / acesso`,
+            desc: `${colleague} foi comprado pelo ${rivalClub} e você segue na luta ${insult}.${titleWonText}`,
+            yesLabel: `Transferir-se para ${sameTierClub.flag} ${sameTierClub.name} (${formatMoney(sameTierClub.salary)}/mês)`,
+            noLabel: `Seguir no ${c.flag} ${c.name}`,
+            onYes: () => {
+              state.contract = Object.assign({ type: "club", pos: 11 }, sameTierClub);
+              return { ok: true, msg: `Você trocou de ares e assinou com ${sameTierClub.flag} ${sameTierClub.name}.`, d: {} };
+            },
+            onNo: () => ({ ok: true, msg: `Você renovou seu vínculo com o ${c.name}.`, d: { torcida: 4 } })
+          };
+        }
+
+        // Caso 4: Série A / Grande Clube (Tier 2) -> Chance 1/100 de Gigante Europeu/Mundial
+        if (c.tier === 2) {
+          const worldRoll = Math.random();
+          if (state.ovr >= 68 && worldRoll < 0.01) {
+            const megaClub = pickRandom(TIER3_CLUBS);
+            return {
+              tag: `Balanço Temporada ${s} • Fenômeno (1/100)`,
+              title: `PROPOSTA DE GIGANTE MUNDIAL: ${megaClub.flag} ${megaClub.name}!`,
+              desc: `Contra todas as probabilidades (1 em 100), o bagre virou estrela! Salário de ${formatMoney(megaClub.salary)}/mês!${titleWonText}`,
+              yesLabel: `Assinar com ${megaClub.flag} ${megaClub.name}!`,
+              noLabel: `Ficar como rei no ${c.name}`,
+              onYes: () => {
+                state.contract = Object.assign({ type: "club", pos: 3 }, megaClub);
+                return { ok: true, msg: `HISTÓRICO! Você chegou ao topo do futebol mundial!`, d: { torcida: 20, ovr: 3 } };
+              },
+              onNo: () => ({ ok: true, msg: `Você recusou o gigante para ser ídolo eterno no ${c.name}.`, d: { torcida: 15 } })
+            };
+          }
+
+          if (state.moral.tecnico < 42) {
+            const backTier1 = pickRandom(TIER1_CLUBS);
+            return {
+              tag: `Balanço Temporada ${s} • Queda`,
+              title: `Você não aguentou a pressão da elite!`,
+              desc: `${colleague} foi comprado pelo ${rivalClub} e você desceu de divisão ${insult}.${titleWonText}`,
+              yesLabel: `Assinar com ${backTier1.flag} ${backTier1.name}`,
+              noLabel: `Aceitar contrato no ${backTier1.flag} ${backTier1.name}`,
+              onYes: () => {
+                state.contract = Object.assign({ type: "club", pos: 9 }, backTier1);
+                state.moral.tecnico = 50;
+                return { ok: false, msg: `Você voltou para a Série B / acesso no ${backTier1.name}.`, d: { ovr: -1 } };
+              },
+              onNo: () => {
+                state.contract = Object.assign({ type: "club", pos: 9 }, backTier1);
+                state.moral.tecnico = 50;
+                return { ok: false, msg: `Você acertou com o ${backTier1.name}.`, d: { ovr: -1 } };
+              }
+            };
+          }
+
+          const peerTop = pickRandom(TIER2_CLUBS.filter((x) => x.name !== c.name));
+          return {
+            tag: `Balanço Temporada ${s} • Elite`,
+            title: `Mais uma temporada na elite!`,
+            desc: `${colleague} fechou com o ${rivalClub}, mas você segue firme na primeira divisão.${titleWonText}`,
+            yesLabel: `Ir para ${peerTop.flag} ${peerTop.name} (${formatMoney(peerTop.salary)}/mês)`,
+            noLabel: `Renovar com ${c.flag} ${c.name}`,
+            onYes: () => {
+              state.contract = Object.assign({ type: "club", pos: 10 }, peerTop);
+              return { ok: true, msg: `Transferência de peso para o ${peerTop.name}!`, d: { torcida: 6 } };
+            },
+            onNo: () => ({ ok: true, msg: `Você renovou contrato com o ${c.name}.`, d: { torcida: 6 } })
+          };
+        }
+
+        // Caso 5: Gigante Mundial (Tier 3)
+        return {
+          tag: `Balanço Temporada ${s} • Topo do Mundo`,
+          title: `Temporada estelar pelo ${c.flag} ${c.name}!`,
+          desc: `Você jogou ao lado dos melhores do planeta e levantou taças importantes.${titleWonText}`,
+          yesLabel: "Renovar contrato milionário",
+          noLabel: "Manter foco para a próxima temporada",
+          onYes: () => {
+            state.contract.salary = Math.round(state.contract.salary * 1.1);
+            return { ok: true, msg: `Novo salário: ${formatMoney(state.contract.salary)}/mês!`, d: { torcida: 5 } };
+          },
+          onNo: () => ({ ok: true, msg: "Seguimos no topo do futebol mundial!", d: { tecnico: 5 } })
+        };
+      }
+
+      function updateHUD() {
+        document.getElementById("avatarShirt").innerHTML = `
+          <span>#${state.shirtNumber}</span>
+          <span style="font-size:0.56rem; color:#94a3b8;">${state.position.id}</span>
+        `;
+        document.getElementById("playerName").textContent = `${state.nationality.flag} ${state.name}`;
+        document.getElementById("playerMeta").textContent = `${state.age} anos • ${state.position.id} • ${state.style.label}`;
+        document.getElementById("ovrBadge").textContent = `OVR ${state.ovr}`;
+
+        const moralsGrid = document.getElementById("moralsGrid");
+        const chipPastor = document.getElementById("chipPastor");
+        if (state.style.id === "crente") {
+          chipPastor.style.display = "block";
+          moralsGrid.classList.remove("three-cols");
+          document.getElementById("mPastor").textContent = state.moral.pastor;
+        } else {
+          chipPastor.style.display = "none";
+          moralsGrid.classList.add("three-cols");
+        }
+
+        document.getElementById("mTorcida").textContent = state.moral.torcida;
+        document.getElementById("mTecnico").textContent = state.moral.tecnico;
+        document.getElementById("mTime").textContent = state.moral.time;
+
+        document.getElementById("stGames").textContent = state.stats.games;
+        document.getElementById("stGoals").textContent = state.stats.goals;
+        document.getElementById("stAssists").textContent = state.stats.assists;
+        document.getElementById("stCards").textContent = `${state.stats.yellows}A/${state.stats.reds}V`;
+        document.getElementById("stTitles").textContent = state.titles.length;
+
+        document.getElementById("dot1").style.background = state.contract.c1;
+        document.getElementById("dot2").style.background = state.contract.c2;
+        document.getElementById("clubTitle").textContent = `${state.contract.flag || ""} ${state.contract.name}`;
+        document.getElementById("standingInfo").textContent =
+          state.contract.type === "club"
+            ? `${state.contract.pos}º/${state.contract.teams} • ${formatMoney(state.contract.salary)}`
+            : `${state.contract.rankTitle} • ${formatMoney(state.contract.salary)}`;
+
+        document.getElementById("seasonInfo").textContent =
+          state.step === state.eventsPerSeason
+            ? `Temporada ${state.season} • Fim de Ano`
+            : `Temporada ${state.season} • ${state.step}/${state.eventsPerSeason}`;
+      }
+
+      function renderEvent(outcomeResult = null) {
+        const ev = state.currentEvent;
+        const card = document.getElementById("eventCard");
+
+        let bodyHtml = "";
+        if (!outcomeResult) {
+          bodyHtml = `
+            <div class="choices">
+              <button type="button" class="btn-choice yes" id="btnChoiceYes">${ev.yesLabel}</button>
+              <button type="button" class="btn-choice no" id="btnChoiceNo">${ev.noLabel}</button>
+              ${ev.thirdLabel ? `<button type="button" class="btn-choice neutral" id="btnChoiceThird">${ev.thirdLabel}</button>` : ""}
+            </div>
+          `;
+        } else {
+          bodyHtml = `
+            <div class="outcome-box ${outcomeResult.ok ? "" : "fail"}">
+              ${outcomeResult.msg}
+            </div>
+          `;
+        }
+
+        card.innerHTML = `
+          <div class="event-header">
+            <span class="tag">${ev.tag}</span>
+            <span>${state.age} anos</span>
+          </div>
+          <h3 class="event-title">${ev.title}</h3>
+          <p class="event-desc">${ev.desc}</p>
+          ${bodyHtml}
+        `;
+
+        const btnNext = document.getElementById("btnNext");
+        btnNext.disabled = !outcomeResult;
+
+        if (!outcomeResult) {
+          document.getElementById("btnChoiceYes").addEventListener("click", () => {
+            const res = ev.onYes();
+            applyOutcome(res);
+            updateHUD();
+            renderEvent(res);
+          });
+          document.getElementById("btnChoiceNo").addEventListener("click", () => {
+            const res = ev.onNo();
+            applyOutcome(res);
+            updateHUD();
+            renderEvent(res);
+          });
+          if (ev.thirdLabel && document.getElementById("btnChoiceThird")) {
+            document.getElementById("btnChoiceThird").addEventListener("click", () => {
+              const res = ev.onThird();
+              applyOutcome(res);
+              updateHUD();
+              renderEvent(res);
+            });
+          }
+        }
+      }
+
+      function renderRetirementScreen() {
+        // Garantir que a última temporada esteja na tabela se ainda não entrou
+        if (state.history.length === 0 || state.history[state.history.length - 1].season !== state.season) {
+          state.history.push({
+            season: state.season,
+            age: state.age,
+            club: state.contract.name,
+            flag: state.contract.flag || "🌍",
+            ovr: state.ovr,
+            games: state.seasonStats.games,
+            goals: state.seasonStats.goals,
+            assists: state.seasonStats.assists,
+            cards: `${state.seasonStats.yellows}A/${state.seasonStats.reds}V`,
+            info: state.contract.type === "club" ? `${state.contract.pos}º/${state.contract.teams}` : `${state.contract.rankTitle}`
+          });
+        }
+
+        const verdict = state.contract.tier === 3
+          ? "Lenda improvável! Saiu da várzea para o topo do futebol mundial."
+          : state.contract.tier === 2
+            ? "Carreira respeitável na elite! Calou os críticos que chamavam de bagre."
+            : state.contract.tier === 1
+              ? "Ídolo cult da Série B / acesso! Fez seu pé de meia com raça."
+              : state.contract.type === "job"
+                ? "Pendurou as chuteiras e construiu uma sólida carreira CLT!"
+                : "Autêntico patrimônio da várzea e das divisões inferiores!";
+
+        const titlesSummary = state.titles.length > 0
+          ? state.titles.join(" • ")
+          : "Nenhum título oficial (só troféu de participação no terrão)";
+
+        const rowsHtml = state.history.map((h) => `
+          <tr>
+            <td>${h.age}a</td>
+            <td>${h.flag} ${h.club}</td>
+            <td><strong>${h.ovr}</strong></td>
+            <td>${h.games}</td>
+            <td>${h.goals}</td>
+            <td>${h.assists}</td>
+            <td>${h.cards}</td>
+            <td>${h.info}</td>
+          </tr>
+        `).join("");
+
+        const card = document.getElementById("eventCard");
+        card.innerHTML = `
+          <div class="event-header">
+            <span class="tag">🏁 Aposentadoria</span>
+            <span>38 anos</span>
+          </div>
+          <h3 class="event-title">Fim de carreira para ${state.nationality.flag} ${state.name}!</h3>
+          <p class="event-desc">${verdict}</p>
+          <div class="outcome-box" style="font-size:0.76rem;">
+            <strong>Conquistas:</strong> ${titlesSummary}
+          </div>
+          <div class="career-table-wrap">
+            <table class="career-table">
+              <thead>
+                <tr>
+                  <th>Idade</th>
+                  <th>Clube / Firma</th>
+                  <th>OVR</th>
+                  <th>J</th>
+                  <th>G</th>
+                  <th>A</th>
+                  <th>Cart.</th>
+                  <th>Pos/Cargo</th>
+                </tr>
+              </thead>
+              <tbody>${rowsHtml}</tbody>
+            </table>
+          </div>
+          <div class="choices">
+            <button type="button" class="btn-choice yes" id="btnRestart">Jogar novamente</button>
+          </div>
+        `;
+        document.getElementById("btnNext").disabled = true;
+        document.getElementById("btnRestart").addEventListener("click", () => showScreen("startScreen"));
+      }
+
+      function runInstantCareerSimulation() {
+        while (state.age < 38) {
+          for (let step = 1; step <= 3; step++) {
+            simulateMatchSlice(11);
+            const ev = drawEvent();
+            const res = Math.random() < 0.55 ? ev.onYes() : ev.onNo();
+            applyOutcome(res);
+          }
+          const review = buildSeasonReviewCard();
+          const reviewRes = Math.random() < 0.65 ? review.onYes() : review.onNo();
+          applyOutcome(reviewRes);
+
+          state.season += 1;
+          state.age += 1;
+          state.seasonStats = { games: 0, goals: 0, assists: 0, yellows: 0, reds: 0 };
+          if (state.contract.type === "club") {
+            if (state.age <= 26) state.ovr = clamp(state.ovr + 1, 25, 99);
+            else if (state.age >= 32) state.ovr = clamp(state.ovr - 1, 25, 99);
+          }
+        }
+        updateHUD();
+        renderRetirementScreen();
+      }
+
+      function nextStep() {
+        if (state.age >= 38) {
+          renderRetirementScreen();
+          return;
+        }
+
+        // Modo Rápido: pula direto para o compilado de fim de temporada
+        if (state.mode === "rapida") {
+          for (let i = 0; i < 3; i++) {
+            simulateMatchSlice(11);
+            const ev = drawEvent();
+            const res = Math.random() < 0.55 ? ev.onYes() : ev.onNo();
+            applyOutcome(res);
+          }
+          state.step = state.eventsPerSeason;
+          state.currentEvent = buildSeasonReviewCard();
+          updateHUD();
+          renderEvent(null);
+
+          // Prepara próxima temporada ao avançar
+          state.season += 1;
+          state.age += 1;
+          state.seasonStats = { games: 0, goals: 0, assists: 0, yellows: 0, reds: 0 };
+          if (state.contract.type === "club") {
+            if (state.age <= 26) state.ovr = clamp(state.ovr + 1, 25, 99);
+            else if (state.age >= 32) state.ovr = clamp(state.ovr - 1, 25, 99);
+          }
+          return;
+        }
+
+        // Modo Normal
+        state.step += 1;
+        if (state.step > state.eventsPerSeason) {
+          state.step = 1;
+          state.season += 1;
+          state.age += 1;
+          state.seasonStats = { games: 0, goals: 0, assists: 0, yellows: 0, reds: 0 };
+
+          if (state.age >= 38) {
+            updateHUD();
+            renderRetirementScreen();
+            return;
+          }
+
+          if (state.contract.type === "club") {
+            if (state.age <= 26) state.ovr = clamp(state.ovr + 1, 25, 99);
+            else if (state.age >= 32) state.ovr = clamp(state.ovr - 1, 25, 99);
+          }
+        }
+
+        if (state.step === state.eventsPerSeason) {
+          state.currentEvent = buildSeasonReviewCard();
+        } else {
+          simulateMatchSlice(11);
+          state.currentEvent = drawEvent();
+        }
+
+        updateHUD();
+        renderEvent(null);
+      }
+
+      function startCareer() {
+        const rawName = document.getElementById("inputName").value.trim();
+        state.mode = state.selectedModeId;
+        state.name = rawName || "Bagre da Vila";
+        state.age = 16;
+        state.season = 1;
+        state.step = 0;
+        state.shirtNumber = 83;
+        state.ovr = 31;
+        state.jobPoints = 0;
+        state.vontadeFutebol = 50;
+        state.selecaoCaps = 0;
+        state.stats = { games: 0, goals: 0, assists: 0, yellows: 0, reds: 0 };
+        state.seasonStats = { games: 0, goals: 0, assists: 0, yellows: 0, reds: 0 };
+        state.titles = [];
+        state.history = [];
+        state.usedEventIds.clear();
+        state.recentBaseKeys = [];
+
+        state.nationality = NATIONALITIES.find((n) => n.id === state.selectedNatId) || NATIONALITIES[0];
+        state.nationalTeamName = state.nationality.team;
+        state.nationalTeamFlag = state.nationality.flag;
         state.isTop20NationalTeam = Boolean(state.nationality.top20);
         state.isNaturalized = false;
         state.altWorldCupShowcase = false;
-        state.stats = { games: 0, goals: 0, assists: 0, yellows: 0, reds: 0 };
-<!-- ... existing code ... -->
+
+        state.position = POSITIONS.find((p) => p.id === state.selectedPosId) || POSITIONS[7];
+        state.style = STYLES.find((s) => s.id === state.selectedStyleId) || STYLES[0];
+        state.moral = Object.assign({}, state.style.init);
+
+        const chosenStart = state.startPool[state.selectedStartIdx] || state.startPool[0];
+        state.contract = Object.assign({}, chosenStart.data);
+
+        state.fbDeck = shuffle(FOOTBALL_EVENTS_CATALOG);
+        state.wkDeck = shuffle(WORK_EVENTS_CATALOG);
+        state.churchDeck = shuffle(CHURCH_EVENTS);
+
+        showScreen("gameScreen");
+
+        if (state.mode === "ligeirinho") {
+          runInstantCareerSimulation();
+        } else {
+          nextStep();
+        }
+      }
+
+      // Eventos de UI
+      renderModeSelector();
+
+      document.getElementById("btnGoSetup").addEventListener("click", () => {
+        generateStartOptionsForNationality(state.selectedNatId);
+        renderSetupOptions();
+        showScreen("setupScreen");
+      });
+
+      document.getElementById("selectNationality").addEventListener("change", (e) => {
+        state.selectedNatId = e.target.value;
+        generateStartOptionsForNationality(state.selectedNatId);
+        renderSetupOptions();
+      });
+
+      document.getElementById("btnRerollStarts").addEventListener("click", () => {
+        generateStartOptionsForNationality(state.selectedNatId);
+        renderSetupOptions();
+      });
+
+      document.getElementById("btnInstallApp").addEventListener("click", async () => {
+        if (deferredInstallPrompt) {
+          deferredInstallPrompt.prompt();
+          await deferredInstallPrompt.userChoice;
+          deferredInstallPrompt = null;
+        } else {
+          document.getElementById("installModal").classList.add("open");
+        }
+      });
+
+      document.getElementById("btnCloseInstallModal").addEventListener("click", () => {
+        document.getElementById("installModal").classList.remove("open");
+      });
+      document.getElementById("btnOkInstallModal").addEventListener("click", () => {
+        document.getElementById("installModal").classList.remove("open");
+      });
+
+      document.getElementById("btnStartCareer").addEventListener("click", startCareer);
+      document.getElementById("btnNext").addEventListener("click", nextStep);
+    })();
+  </script>
+</body>
+</html>
